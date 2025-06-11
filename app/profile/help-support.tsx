@@ -5,17 +5,17 @@ import { LinearGradient } from "expo-linear-gradient"
 import { useRouter } from "expo-router"
 import { useState } from "react"
 import {
-    Alert,
-    Modal,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Modal,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native"
 
 export default function HelpSupportScreen() {
@@ -77,141 +77,148 @@ export default function HelpSupportScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" translucent={false} hidden={false} />
-      <SafeAreaView style={styles.safeArea}>
+
+      {/* Updated Header with curved bottom */}
+      <View style={styles.headerContainer}>
         <LinearGradient
           colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={styles.header}
+          style={styles.headerGradient}
         >
-          <View style={styles.headerContent}>
-            <TouchableOpacity style={styles.backButton} onPress={() => router.push("/profile")}>
-              <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Help & Support</Text>
-            <View style={{ width: 24 }} />
-          </View>
+          <SafeAreaView style={styles.headerSafeArea}>
+            <View style={styles.headerContent}>
+              <TouchableOpacity style={styles.backButton} onPress={() => router.push("/profile")}>
+                <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+              <Text style={styles.headerTitle}>Help & Support</Text>
+              <View style={{ width: 24 }} />
+            </View>
+          </SafeAreaView>
         </LinearGradient>
 
-        <ScrollView style={styles.content}>
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Contact Support</Text>
+        {/* This is the curved bottom part */}
+        <View style={styles.curvedBottom} />
+      </View>
 
-            <TouchableOpacity style={styles.contactItem}>
-              <View style={styles.contactIconContainer}>
-                <Ionicons name="call-outline" size={24} color="#FFFFFF" />
-              </View>
-              <View style={styles.contactDetails}>
-                <Text style={styles.contactLabel}>Phone Support</Text>
-                <Text style={styles.contactValue}>+63 (2) 8911-1406</Text>
-                <Text style={styles.contactHours}>Available 24/7</Text>
-              </View>
-            </TouchableOpacity>
+      <ScrollView style={styles.content}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Contact Support</Text>
 
-            <TouchableOpacity style={[styles.contactItem, { borderBottomWidth: 0 }]}>
-              <View style={[styles.contactIconContainer, { backgroundColor: "#10B981" }]}>
-                <Ionicons name="mail-outline" size={24} color="#FFFFFF" />
-              </View>
-              <View style={styles.contactDetails}>
-                <Text style={styles.contactLabel}>Email Support</Text>
-                <Text style={styles.contactValue}>support@cdrrmo.gov.ph</Text>
-                <Text style={styles.contactHours}>Response within 24 hours</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Frequently Asked Questions</Text>
-
-            {faqs.map((faq, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[styles.faqItem, index === faqs.length - 1 && expandedFaq !== index && { borderBottomWidth: 0 }]}
-                onPress={() => toggleFaq(index)}
-              >
-                <View style={styles.faqHeader}>
-                  <Text style={styles.faqQuestion}>{faq.question}</Text>
-                  <Ionicons name={expandedFaq === index ? "chevron-up" : "chevron-down"} size={20} color="#6B7280" />
-                </View>
-
-                {expandedFaq === index && <Text style={styles.faqAnswer}>{faq.answer}</Text>}
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          <TouchableOpacity style={styles.reportButton} onPress={() => setReportModalVisible(true)}>
-            <Ionicons name="bug-outline" size={20} color="#FFFFFF" />
-            <Text style={styles.reportButtonText}>Report a Problem</Text>
+          <TouchableOpacity style={styles.contactItem}>
+            <View style={styles.contactIconContainer}>
+              <Ionicons name="call-outline" size={24} color="#FFFFFF" />
+            </View>
+            <View style={styles.contactDetails}>
+              <Text style={styles.contactLabel}>Phone Support</Text>
+              <Text style={styles.contactValue}>+63 (2) 8911-1406</Text>
+              <Text style={styles.contactHours}>Available 24/7</Text>
+            </View>
           </TouchableOpacity>
-        </ScrollView>
-        {/* Report Problem Modal */}
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={reportModalVisible}
-          onRequestClose={() => setReportModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
-            <SafeAreaView style={styles.modalSafeArea}>
-              <LinearGradient
-                colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.modalHeader}
-              >
-                <TouchableOpacity style={styles.backButton} onPress={() => setReportModalVisible(false)}>
-                  <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-                </TouchableOpacity>
-                <Text style={styles.modalHeaderTitle}>Report a Problem</Text>
-                <View style={{ width: 24 }} />
-              </LinearGradient>
 
-              <ScrollView style={styles.modalContent}>
-                <View style={styles.reportSection}>
-                  <Text style={styles.reportLabel}>Problem Category</Text>
-                  <View style={styles.categoryGrid}>
-                    {[
-                      "App Crashes",
-                      "Login Issues",
-                      "Feature Not Working",
-                      "Performance Issues",
-                      "Data Sync Problems",
-                      "Other",
-                    ].map((category) => (
-                      <TouchableOpacity
-                        key={category}
-                        style={[styles.categoryButton, reportCategory === category && styles.selectedCategory]}
-                        onPress={() => setReportCategory(category)}
-                      >
-                        <Text style={[styles.categoryText, reportCategory === category && styles.selectedCategoryText]}>
-                          {category}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
+          <TouchableOpacity style={[styles.contactItem, { borderBottomWidth: 0 }]}>
+            <View style={[styles.contactIconContainer, { backgroundColor: "#10B981" }]}>
+              <Ionicons name="mail-outline" size={24} color="#FFFFFF" />
+            </View>
+            <View style={styles.contactDetails}>
+              <Text style={styles.contactLabel}>Email Support</Text>
+              <Text style={styles.contactValue}>support@cdrrmo.gov.ph</Text>
+              <Text style={styles.contactHours}>Response within 24 hours</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
 
-                  <Text style={styles.reportLabel}>Describe the Problem</Text>
-                  <TextInput
-                    style={styles.reportTextArea}
-                    value={reportDescription}
-                    onChangeText={setReportDescription}
-                    placeholder="Please describe the issue you're experiencing in detail..."
-                    multiline
-                    numberOfLines={6}
-                    textAlignVertical="top"
-                  />
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Frequently Asked Questions</Text>
 
-                  <TouchableOpacity style={styles.submitReportButton} onPress={handleReportProblem}>
-                    <Ionicons name="send" size={20} color="#FFFFFF" />
-                    <Text style={styles.submitReportText}>Submit Report</Text>
-                  </TouchableOpacity>
+          {faqs.map((faq, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[styles.faqItem, index === faqs.length - 1 && expandedFaq !== index && { borderBottomWidth: 0 }]}
+              onPress={() => toggleFaq(index)}
+            >
+              <View style={styles.faqHeader}>
+                <Text style={styles.faqQuestion}>{faq.question}</Text>
+                <Ionicons name={expandedFaq === index ? "chevron-up" : "chevron-down"} size={20} color="#6B7280" />
+              </View>
+
+              {expandedFaq === index && <Text style={styles.faqAnswer}>{faq.answer}</Text>}
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <TouchableOpacity style={styles.reportButton} onPress={() => setReportModalVisible(true)}>
+          <Ionicons name="bug-outline" size={20} color="#FFFFFF" />
+          <Text style={styles.reportButtonText}>Report a Problem</Text>
+        </TouchableOpacity>
+      </ScrollView>
+      {/* Report Problem Modal */}
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={reportModalVisible}
+        onRequestClose={() => setReportModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+          <SafeAreaView style={styles.modalSafeArea}>
+            <LinearGradient
+              colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.modalHeader}
+            >
+              <TouchableOpacity style={styles.backButton} onPress={() => setReportModalVisible(false)}>
+                <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+              <Text style={styles.modalHeaderTitle}>Report a Problem</Text>
+              <View style={{ width: 24 }} />
+            </LinearGradient>
+
+            <ScrollView style={styles.modalContent}>
+              <View style={styles.reportSection}>
+                <Text style={styles.reportLabel}>Problem Category</Text>
+                <View style={styles.categoryGrid}>
+                  {[
+                    "App Crashes",
+                    "Login Issues",
+                    "Feature Not Working",
+                    "Performance Issues",
+                    "Data Sync Problems",
+                    "Other",
+                  ].map((category) => (
+                    <TouchableOpacity
+                      key={category}
+                      style={[styles.categoryButton, reportCategory === category && styles.selectedCategory]}
+                      onPress={() => setReportCategory(category)}
+                    >
+                      <Text style={[styles.categoryText, reportCategory === category && styles.selectedCategoryText]}>
+                        {category}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
                 </View>
-              </ScrollView>
-            </SafeAreaView>
-          </View>
-        </Modal>
-      </SafeAreaView>
+
+                <Text style={styles.reportLabel}>Describe the Problem</Text>
+                <TextInput
+                  style={styles.reportTextArea}
+                  value={reportDescription}
+                  onChangeText={setReportDescription}
+                  placeholder="Please describe the issue you're experiencing in detail..."
+                  multiline
+                  numberOfLines={6}
+                  textAlignVertical="top"
+                />
+
+                <TouchableOpacity style={styles.submitReportButton} onPress={handleReportProblem}>
+                  <Ionicons name="send" size={20} color="#FFFFFF" />
+                  <Text style={styles.submitReportText}>Submit Report</Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </SafeAreaView>
+        </View>
+      </Modal>
     </View>
   )
 }
@@ -219,21 +226,34 @@ export default function HelpSupportScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1E3A8A",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-  },
-  safeArea: {
-    flex: 1,
     backgroundColor: "#F9FAFB",
   },
-  header: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+  // Updated Header styles with curved bottom (matching profile screen)
+  headerContainer: {
+    position: "relative",
+    zIndex: 10,
+  },
+  headerGradient: {
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0,
+    paddingBottom: 30,
+  },
+  headerSafeArea: {
+    backgroundColor: "transparent",
+  },
+  curvedBottom: {
+    height: 30,
+    backgroundColor: "#F9FAFB",
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    marginTop: -30,
+    zIndex: 5,
   },
   headerContent: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
   },
   backButton: {
     padding: 4,
@@ -246,7 +266,8 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 15, // Adjusted to account for curved header
+    marginTop: -15, // Pull content up slightly to overlap with the curve
   },
   section: {
     backgroundColor: "#FFFFFF",
