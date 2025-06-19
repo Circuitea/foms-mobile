@@ -298,8 +298,9 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
   const confirmMarkAllAsRead = () => {
     if (activeTab === "active") {
       setActiveTasks((prev) => prev.map((task) => ({ ...task, isRead: true })))
+    } else {
+      setAllTasks((prev) => prev.map((task) => ({ ...task, isRead: true })))
     }
-    setAllTasks((prev) => prev.map((task) => ({ ...task, isRead: true })))
   }
 
   const getUnreadNotificationsCount = () => {
@@ -399,13 +400,13 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
     >
       <View style={styles.notificationHeader}>
         <View style={styles.notificationLeft}>
-          <View style={[styles.statusIndicator, { backgroundColor: notification.isRead ? "#9CA3AF" : "#3B82F6" }]} />
+          <View style={[styles.statusIndicator, { backgroundColor: notification.isRead ? "#9CA3AF" : "#FF4D4D" }]} />
           <View
             style={[
               styles.typeBadge,
               {
                 backgroundColor:
-                  notification.type === "URGENT" ? "#EF4444" : notification.type === "HIGH" ? "#F59E0B" : "#1E3A8A",
+                  notification.type === "URGENT" ? "#FF4D4D" : notification.type === "HIGH" ? "#F59E0B" : "#1B2560",
               },
             ]}
           >
@@ -444,8 +445,8 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
               </TouchableOpacity>
             )}
             <TouchableOpacity style={styles.dropdownItem} onPress={() => handleDeleteNotification(notification.id)}>
-              <Ionicons name="trash-outline" size={16} color="#EF4444" />
-              <Text style={[styles.dropdownText, { color: "#EF4444" }]}>Delete</Text>
+              <Ionicons name="trash-outline" size={16} color="#FF4D4D" />
+              <Text style={[styles.dropdownText, { color: "#FF4D4D" }]}>Delete</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -489,19 +490,18 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
           <View
             style={[
               styles.typeBadge,
-              { backgroundColor: task.type === "URGENT" ? "#EF4444" : task.type === "HIGH" ? "#F59E0B" : "#1E3A8A" },
+              { backgroundColor: task.type === "URGENT" ? "#FF4D4D" : task.type === "HIGH" ? "#F59E0B" : "#1B2560" },
             ]}
           >
+            {task.type === "URGENT" && <Ionicons name="warning" size={12} color="#FFFFFF" />}
             <Text style={styles.typeText}>{task.type}</Text>
           </View>
-          <Text style={styles.taskCategory}>{task.category}</Text>
+          <View style={styles.categoryContainer}>
+            <Text style={styles.taskCategory}>{task.category}</Text>
+          </View>
           <View style={styles.statusIndicatorTask}>
-            <Ionicons
-              name={task.isActive ? "time-outline" : "checkmark-circle"}
-              size={16}
-              color={task.isActive ? "#3B82F6" : "#10B981"}
-            />
-            <Text style={[styles.statusTextTask, { color: task.isActive ? "#3B82F6" : "#10B981" }]}>
+            <View style={[styles.statusDot, { backgroundColor: task.isActive ? "#1B2560" : "#10B981" }]} />
+            <Text style={[styles.statusTextTask, { color: task.isActive ? "#1B2560" : "#10B981" }]}>
               {task.isActive ? "IN PROGRESS" : "COMPLETED"}
             </Text>
           </View>
@@ -512,27 +512,31 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
       <Text style={styles.taskDescription}>{task.description}</Text>
 
       <View style={styles.taskMeta}>
-        <View style={styles.taskMetaItem}>
-          <Ionicons name="location" size={14} color="#EF4444" />
-          <Text style={styles.taskMetaText}>{task.location}</Text>
+        <View style={styles.taskMetaRow}>
+          <View style={styles.taskMetaItem}>
+            <Ionicons name="location" size={16} color="#FF4D4D" />
+            <Text style={styles.taskMetaText}>{task.location}</Text>
+          </View>
+          <View style={styles.taskMetaItem}>
+            <Ionicons name="time-outline" size={16} color="#64748B" />
+            <Text style={styles.taskMetaText}>{task.timeAgo || task.time}</Text>
+          </View>
         </View>
-        <View style={styles.taskMetaItem}>
-          <Ionicons name="time-outline" size={14} color="#6B7280" />
-          <Text style={styles.taskMetaText}>{task.timeAgo || task.time}</Text>
-        </View>
-        <View style={styles.taskMetaItem}>
-          <Ionicons name="person-outline" size={14} color="#6B7280" />
-          <Text style={styles.taskMetaText}>{task.assignedTo}</Text>
-        </View>
-        <View style={styles.taskMetaItem}>
-          <Ionicons name="calendar-outline" size={14} color="#6B7280" />
-          <Text style={styles.taskMetaText}>Due: {task.dueDate}</Text>
+        <View style={styles.taskMetaRow}>
+          <View style={styles.taskMetaItem}>
+            <Ionicons name="person-outline" size={16} color="#64748B" />
+            <Text style={styles.taskMetaText}>{task.assignedTo}</Text>
+          </View>
+          <View style={styles.taskMetaItem}>
+            <Ionicons name="calendar-outline" size={16} color="#64748B" />
+            <Text style={styles.taskMetaText}>Due: {task.dueDate}</Text>
+          </View>
         </View>
       </View>
 
       <View style={styles.taskFooter}>
         <View style={styles.readIndicator}>
-          <View style={[styles.readDot, { backgroundColor: task.isRead ? "#9CA3AF" : "#3B82F6" }]} />
+          <View style={[styles.readDot, { backgroundColor: task.isRead ? "#9CA3AF" : "#FF4D4D" }]} />
           <Text style={styles.readText}>{task.isRead ? "Read" : "Unread"}</Text>
         </View>
         <Text style={styles.tapHint}>Tap for details</Text>
@@ -546,10 +550,10 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
     return (
       <Modal animationType="slide" transparent={false} visible={detailModalVisible} onRequestClose={handleCloseDetail}>
         <View style={styles.modalContainer}>
-          <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+          <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
           <SafeAreaView style={styles.modalSafeArea}>
             <LinearGradient
-              colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+              colors={["#1B2560", "#FF4D4D"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.modalHeader}
@@ -575,10 +579,10 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
                       {
                         backgroundColor:
                           selectedTask.type === "URGENT"
-                            ? "#EF4444"
+                            ? "#FF4D4D"
                             : selectedTask.type === "HIGH"
                               ? "#F59E0B"
-                              : "#1E3A8A",
+                              : "#1B2560",
                       },
                     ]}
                   >
@@ -600,14 +604,14 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
               {/* Quick Info Grid */}
               <View style={styles.quickInfoGrid}>
                 <View style={styles.quickInfoItem}>
-                  <Ionicons name="location" size={20} color="#EF4444" />
+                  <Ionicons name="location" size={20} color="#FF4D4D" />
                   <View style={styles.quickInfoContent}>
                     <Text style={styles.quickInfoLabel}>Location</Text>
                     <Text style={styles.quickInfoValue}>{selectedTask.location}</Text>
                   </View>
                 </View>
                 <View style={styles.quickInfoItem}>
-                  <Ionicons name="time" size={20} color="#3B82F6" />
+                  <Ionicons name="time" size={20} color="#1B2560" />
                   <View style={styles.quickInfoContent}>
                     <Text style={styles.quickInfoLabel}>Time</Text>
                     <Text style={styles.quickInfoValue}>{selectedTask.timeAgo || selectedTask.time}</Text>
@@ -631,8 +635,8 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
 
               {/* Description Section */}
               <View style={styles.sectionCard}>
-                <View style={styles.sectionHeader}>
-                  <Ionicons name="document-text" size={20} color="#3B82F6" />
+                <View style={styles.sectionHeaderRow}>
+                  <Ionicons name="document-text" size={20} color="#1B2560" />
                   <Text style={styles.sectionTitle}>Description</Text>
                 </View>
                 <Text style={styles.descriptionText}>{selectedTask.description}</Text>
@@ -640,8 +644,8 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
 
               {/* Additional Details */}
               <View style={styles.sectionCard}>
-                <View style={styles.sectionHeader}>
-                  <Ionicons name="information-circle" size={20} color="#3B82F6" />
+                <View style={styles.sectionHeaderRow}>
+                  <Ionicons name="information-circle" size={20} color="#1B2560" />
                   <Text style={styles.sectionTitle}>Additional Information</Text>
                 </View>
                 <View style={styles.detailRow}>
@@ -664,8 +668,8 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
 
               {/* Instructions */}
               <View style={styles.sectionCard}>
-                <View style={styles.sectionHeader}>
-                  <Ionicons name="list" size={20} color="#3B82F6" />
+                <View style={styles.sectionHeaderRow}>
+                  <Ionicons name="list" size={20} color="#1B2560" />
                   <Text style={styles.sectionTitle}>Instructions</Text>
                 </View>
                 <View style={styles.instructionsList}>
@@ -715,25 +719,25 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
               {/* Required Resources (for active tasks) */}
               {selectedTask.isActive && (
                 <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeader}>
-                    <Ionicons name="construct" size={20} color="#3B82F6" />
+                  <View style={styles.sectionHeaderRow}>
+                    <Ionicons name="construct" size={20} color="#1B2560" />
                     <Text style={styles.sectionTitle}>Required Resources</Text>
                   </View>
                   <View style={styles.resourceGrid}>
                     <View style={styles.resourceItem}>
-                      <Ionicons name="boat" size={16} color="#3B82F6" />
+                      <Ionicons name="boat" size={16} color="#1B2560" />
                       <Text style={styles.resourceText}>Rescue boats</Text>
                     </View>
                     <View style={styles.resourceItem}>
-                      <Ionicons name="shield" size={16} color="#3B82F6" />
+                      <Ionicons name="shield" size={16} color="#1B2560" />
                       <Text style={styles.resourceText}>Life vests</Text>
                     </View>
                     <View style={styles.resourceItem}>
-                      <Ionicons name="radio" size={16} color="#3B82F6" />
+                      <Ionicons name="radio" size={16} color="#1B2560" />
                       <Text style={styles.resourceText}>Communication radios</Text>
                     </View>
                     <View style={styles.resourceItem}>
-                      <Ionicons name="medical" size={16} color="#3B82F6" />
+                      <Ionicons name="medical" size={16} color="#1B2560" />
                       <Text style={styles.resourceText}>First aid kits</Text>
                     </View>
                   </View>
@@ -765,12 +769,12 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" translucent={false} hidden={false} />
+      <StatusBar barStyle="light-content" backgroundColor="#1B2560" translucent={false} hidden={false} />
 
-      {/* Updated Header with curved bottom */}
+      {/* Enhanced Header with New Gradient Colors */}
       <View style={styles.headerContainer}>
         <LinearGradient
-          colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+          colors={["#1B2560", "#FF4D4D"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.headerGradient}
@@ -780,16 +784,19 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
               <View style={styles.headerLeft}>
                 <View style={styles.logoContainer}>
                   <View style={styles.logoCircle}>
-                    <Ionicons name="shield" size={24} color="#FFFFFF" />
+                    <Ionicons name="shield" size={28} color="#FFFFFF" />
                   </View>
-                  <Text style={styles.logoText}>CDRRMO</Text>
+                  <View style={styles.logoTextContainer}>
+                    <Text style={styles.logoText}>CDRRMO</Text>
+                    <Text style={styles.logoSubtext}>Task Management</Text>
+                  </View>
                 </View>
               </View>
               <View style={styles.headerRight}>
-                {/* Notification Bell Button */}
+                {/* Enhanced Notification Bell Button */}
                 <TouchableOpacity style={styles.notificationButton} onPress={() => setNotificationsVisible(true)}>
                   <View style={styles.notificationIconContainer}>
-                    <Ionicons name="notifications" size={20} color="#FFFFFF" />
+                    <Ionicons name="notifications" size={24} color="#FFFFFF" />
                     {getUnreadNotificationsCount() > 0 && (
                       <View style={styles.notificationBadge}>
                         <Text style={styles.notificationBadgeText}>
@@ -801,7 +808,7 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.profileButton}>
                   <View style={styles.profileCircle}>
-                    <Ionicons name="person" size={20} color="#FFFFFF" />
+                    <Ionicons name="person" size={22} color="#FFFFFF" />
                   </View>
                 </TouchableOpacity>
               </View>
@@ -809,7 +816,7 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
           </SafeAreaView>
         </LinearGradient>
 
-        {/* This is the curved bottom part */}
+        {/* Enhanced curved bottom part */}
         <View style={styles.curvedBottom} />
       </View>
 
@@ -820,8 +827,9 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
             onPress={() => setActiveTabWithReset("active")}
           >
             <View style={styles.tabContent}>
+              <Ionicons name="time-outline" size={18} color={activeTab === "active" ? "#1B2560" : "#64748B"} />
               <Text style={[styles.tabText, activeTab === "active" && styles.activeTabText]}>
-                Active Tasks ({activeTasks.length})
+                Active Tasks
               </Text>
               {getUnreadActiveTasksCount() > 0 && (
                 <View style={styles.tabBadge}>
@@ -835,8 +843,9 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
             onPress={() => setActiveTabWithReset("all")}
           >
             <View style={styles.tabContent}>
+              <Ionicons name="list-outline" size={18} color={activeTab === "all" ? "#1B2560" : "#64748B"} />
               <Text style={[styles.tabText, activeTab === "all" && styles.activeTabText]}>
-                All Tasks ({allTasks.length})
+                All Tasks
               </Text>
               {getUnreadAllTasksCount() > 0 && (
                 <View style={styles.tabBadge}>
@@ -848,13 +857,13 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
         </View>
 
         <View style={styles.sectionHeaderContainer}>
-          <View style={styles.sectionHeader}>
+          <View style={styles.sectionHeaderRow}>
             <View style={styles.sectionTitleContainer}>
-              <Ionicons name={activeTab === "active" ? "time" : "list"} size={24} color="#1E3A8A" />
+              <Ionicons name={activeTab === "active" ? "time" : "list"} size={24} color="#1B2560" />
               <Text style={styles.sectionTitle}>{activeTab === "active" ? "Active Tasks" : "All Tasks"}</Text>
             </View>
             <TouchableOpacity style={styles.markAllButton} onPress={handleMarkAllAsRead}>
-              <Ionicons name="checkmark-done" size={16} color="#3B82F6" />
+              <Ionicons name="checkmark-done" size={16} color="#1B2560" />
               <Text style={styles.markAllButtonText}>Mark All as Read</Text>
             </TouchableOpacity>
           </View>
@@ -876,7 +885,7 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
 
       {renderDetailModal()}
 
-      {/* Notifications Modal */}
+      {/* Notifications Modal with Updated Colors */}
       <Modal
         animationType="slide"
         transparent={false}
@@ -884,12 +893,12 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
         onRequestClose={() => setNotificationsVisible(false)}
       >
         <View style={styles.modalContainer}>
-          <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+          <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
           <SafeAreaView style={styles.modalSafeArea}>
-            {/* Header with curved bottom */}
+            {/* Header with updated gradient */}
             <View style={styles.notificationModalHeaderContainer}>
               <LinearGradient
-                colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+                colors={["#1B2560", "#FF4D4D"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.notificationModalHeaderGradient}
@@ -911,26 +920,36 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
                 style={[styles.notificationTab, activeNotificationTab === "all" && styles.activeNotificationTab]}
                 onPress={() => setActiveNotificationTab("all")}
               >
+                <Ionicons
+                  name="notifications-outline"
+                  size={18}
+                  color={activeNotificationTab === "all" ? "#1B2560" : "#64748B"}
+                />
                 <Text
                   style={[
                     styles.notificationTabText,
                     activeNotificationTab === "all" && styles.activeNotificationTabText,
                   ]}
                 >
-                  All ({notifications.length})
+                  All
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.notificationTab, activeNotificationTab === "archived" && styles.activeNotificationTab]}
                 onPress={() => setActiveNotificationTab("archived")}
               >
+                <Ionicons
+                  name="archive-outline"
+                  size={18}
+                  color={activeNotificationTab === "archived" ? "#1B2560" : "#64748B"}
+                />
                 <Text
                   style={[
                     styles.notificationTabText,
                     activeNotificationTab === "archived" && styles.activeNotificationTabText,
                   ]}
                 >
-                  Archived ({archivedNotifications.length})
+                  Archived
                 </Text>
               </TouchableOpacity>
             </View>
@@ -938,16 +957,16 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
             {/* Section Header with Mark All Button - Only show for non-archived notifications */}
             {activeNotificationTab === "all" && (
               <View style={styles.sectionHeaderContainer}>
-                <View style={styles.sectionHeader}>
+                <View style={styles.sectionHeaderRow}>
                   {/* Notification Bell + Title */}
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Ionicons name="notifications-outline" size={20} color="#3B82F6" style={{ marginRight: 6 }} />
+                    <Ionicons name="notifications-outline" size={20} color="#1B2560" style={{ marginRight: 6 }} />
                     <Text style={styles.sectionTitle}>All Notifications</Text>
                   </View>
 
                   {/* Mark All as Read Button */}
                   <TouchableOpacity style={styles.markAllButton} onPress={handleMarkAllNotificationsAsRead}>
-                    <Ionicons name="checkmark-done" size={16} color="#3B82F6" />
+                    <Ionicons name="checkmark-done" size={16} color="#1B2560" />
                     <Text style={styles.markAllButtonText}>Mark All as Read</Text>
                   </TouchableOpacity>
                 </View>
@@ -957,10 +976,10 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
             {/* Archived Header - Only show for archived notifications */}
             {activeNotificationTab === "archived" && (
               <View style={styles.sectionHeaderContainer}>
-                <View style={styles.sectionHeader}>
+                <View style={styles.sectionHeaderRow}>
                   {/* Archive Icon + Title */}
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Ionicons name="archive-outline" size={20} color="#6B7280" style={{ marginRight: 6 }} />
+                    <Ionicons name="archive-outline" size={20} color="#64748B" style={{ marginRight: 6 }} />
                     <Text style={styles.sectionTitle}>Archived Notifications</Text>
                   </View>
                 </View>
@@ -998,7 +1017,7 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
         </View>
       </Modal>
 
-      {/* Notification Detail Modal */}
+      {/* Notification Detail Modal with Updated Colors */}
       {selectedNotification && (
         <Modal
           animationType="slide"
@@ -1007,10 +1026,10 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
           onRequestClose={() => setNotificationDetailVisible(false)}
         >
           <View style={styles.modalContainer}>
-            <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+            <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
             <SafeAreaView style={styles.modalSafeArea}>
               <LinearGradient
-                colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+                colors={["#1B2560", "#FF4D4D"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.modalHeader}
@@ -1064,10 +1083,10 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
                         {
                           backgroundColor:
                             selectedNotification.type === "URGENT"
-                              ? "#EF4444"
+                              ? "#FF4D4D"
                               : selectedNotification.type === "HIGH"
                                 ? "#F59E0B"
-                                : "#1E3A8A",
+                                : "#1B2560",
                         },
                       ]}
                     >
@@ -1092,14 +1111,14 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
                 {/* Quick Info Grid */}
                 <View style={styles.quickInfoGrid}>
                   <View style={styles.quickInfoItem}>
-                    <Ionicons name="location" size={20} color="#EF4444" />
+                    <Ionicons name="location" size={20} color="#FF4D4D" />
                     <View style={styles.quickInfoContent}>
                       <Text style={styles.quickInfoLabel}>Location</Text>
                       <Text style={styles.quickInfoValue}>{selectedNotification.location}</Text>
                     </View>
                   </View>
                   <View style={styles.quickInfoItem}>
-                    <Ionicons name="time" size={20} color="#3B82F6" />
+                    <Ionicons name="time" size={20} color="#1B2560" />
                     <View style={styles.quickInfoContent}>
                       <Text style={styles.quickInfoLabel}>Time</Text>
                       <Text style={styles.quickInfoValue}>{selectedNotification.time}</Text>
@@ -1123,8 +1142,8 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
 
                 {/* Description Section */}
                 <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeader}>
-                    <Ionicons name="document-text" size={20} color="#3B82F6" />
+                  <View style={styles.sectionHeaderRow}>
+                    <Ionicons name="document-text" size={20} color="#1B2560" />
                     <Text style={styles.sectionTitle}>Description</Text>
                   </View>
                   <Text style={styles.descriptionText}>{selectedNotification.description}</Text>
@@ -1132,8 +1151,8 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
 
                 {/* Additional Details */}
                 <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeader}>
-                    <Ionicons name="information-circle" size={20} color="#3B82F6" />
+                  <View style={styles.sectionHeaderRow}>
+                    <Ionicons name="information-circle" size={20} color="#1B2560" />
                     <Text style={styles.sectionTitle}>Additional Information</Text>
                   </View>
                   <View style={styles.detailRow}>
@@ -1161,34 +1180,35 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#F8FAFC",
   },
-  // Updated Header styles with curved bottom (matching profile screen)
+  // Enhanced Header styles with new gradient colors
   headerContainer: {
     position: "relative",
     zIndex: 10,
+    elevation: 8,
   },
   headerGradient: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0,
-    paddingBottom: 30, // Increased padding for better curve
+    paddingBottom: 35,
   },
   headerSafeArea: {
     backgroundColor: "transparent",
   },
   curvedBottom: {
-    height: 30, // Increased height for better curve
-    backgroundColor: "#F9FAFB",
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    marginTop: -30,
+    height: 35,
+    backgroundColor: "#F8FAFC",
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
+    marginTop: -35,
     zIndex: 5,
   },
   headerContent: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 20,
   },
   headerLeft: {
     flexDirection: "row",
@@ -1198,78 +1218,137 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  // Updated logo styles to match profile screen
   logoCircle: {
-    width: 48, // Increased from 40 to match profile
-    height: 48, // Increased from 40 to match profile
-    borderRadius: 24, // Increased from 20 to match profile
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: "rgba(255, 255, 255, 0.25)",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 12,
+    marginRight: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  logoTextContainer: {
+    flexDirection: "column",
   },
   logoText: {
     color: "white",
-    fontSize: 20, // Increased from 18 to match profile
+    fontSize: 22,
+    fontWeight: "bold",
+    letterSpacing: 0.5,
+  },
+  logoSubtext: {
+    color: "rgba(255, 255, 255, 0.8)",
+    fontSize: 12,
+    fontWeight: "500",
+    marginTop: 2,
+  },
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  notificationButton: {
+    padding: 6,
+  },
+  notificationIconContainer: {
+    position: "relative",
+  },
+  notificationBadge: {
+    position: "absolute",
+    top: -8,
+    right: -8,
+    backgroundColor: "#FF4D4D",
+    borderRadius: 12,
+    minWidth: 24,
+    height: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  notificationBadgeText: {
+    color: "#FFFFFF",
+    fontSize: 11,
     fontWeight: "bold",
   },
   profileButton: {
-    padding: 4,
-    position: "relative",
+    padding: 6,
   },
   profileCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255, 255, 255, 0.25)",
     justifyContent: "center",
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   content: {
     flex: 1,
-    marginTop: -15, // Overlap with curve
+    marginTop: -20,
   },
+  // Enhanced tab container
   tabContainer: {
     flexDirection: "row",
-    backgroundColor: "#FFFFFF", // Ensure white background
+    backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
-    marginTop: 10, // Increased margin to create separation from curved header
+    borderBottomColor: "#E2E8F0",
+    marginTop: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   tab: {
     flex: 1,
-    paddingVertical: 16,
-    paddingHorizontal: 12,
-    borderBottomWidth: 2,
+    paddingVertical: 18,
+    paddingHorizontal: 16,
+    borderBottomWidth: 3,
     borderBottomColor: "transparent",
   },
   activeTab: {
-    borderBottomColor: "#1E3A8A",
+    borderBottomColor: "#1B2560",
   },
   tabContent: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
+    gap: 8,
   },
   tabText: {
-    fontSize: 14,
-    color: "#6B7280",
-    fontWeight: "500",
+    fontSize: 15,
+    color: "#64748B",
+    fontWeight: "600",
     textAlign: "center",
   },
   activeTabText: {
-    color: "#1E3A8A",
-    fontWeight: "600",
+    color: "#1B2560",
+    fontWeight: "700",
   },
   tabBadge: {
     position: "absolute",
-    top: -8,
-    right: -8,
-    backgroundColor: "#EF4444",
-    borderRadius: 10,
-    minWidth: 18,
-    height: 18,
+    top: -10,
+    right: -10,
+    backgroundColor: "#FF4D4D",
+    borderRadius: 12,
+    minWidth: 20,
+    height: 20,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 2,
@@ -1280,20 +1359,21 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "bold",
   },
+  // Enhanced section header
   sectionHeaderContainer: {
-    backgroundColor: "#FFFFFF", // Ensure consistent white background
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 12, // Reduce from 16 to 12 for better balance
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
+    borderBottomColor: "#E2E8F0",
   },
-  sectionHeader: {
+  sectionHeaderRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    minHeight: 32, // Reduce from 40 to 32
-    gap: 24, // Reduce from 48 to 24 for better spacing
+    minHeight: 36,
+    gap: 20,
   },
   sectionTitleContainer: {
     flexDirection: "row",
@@ -1302,33 +1382,43 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   sectionTitle: {
-    fontSize: 22, // Reduce from 26 to 22 for better proportion
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1B2560",
+    letterSpacing: 0.3,
+  },
+  taskCounter: {
+    backgroundColor: "#FF4D4D",
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginLeft: 8,
+  },
+  taskCounterText: {
+    color: "#FFFFFF",
+    fontSize: 12,
     fontWeight: "bold",
-    color: "#111827",
-    letterSpacing: 0.3, // Reduce from 0.5 to 0.3
   },
   markAllButton: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#3B82F6",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    gap: 6,
+    borderWidth: 2,
+    borderColor: "#1B2560",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 12,
+    gap: 8,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-    minWidth: 120,
-    marginLeft: 16,
+    shadowRadius: 4,
+    elevation: 2,
   },
   markAllButtonText: {
-    color: "#3B82F6",
+    color: "#1B2560",
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   contentContainer: {
     flex: 1,
@@ -1337,143 +1427,191 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 20,
-    paddingTop: 16, // Increase from 12 to 16
-    paddingBottom: 20,
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 30,
   },
-  // Task Card Styles
+  // Enhanced Task Card Styles
   taskCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: "#E2E8F0",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
   unreadCard: {
     borderLeftWidth: 4,
-    borderLeftColor: "#3B82F6",
-    backgroundColor: "#F8FAFC",
+    borderLeftColor: "#FF4D4D",
+    backgroundColor: "#FEFEFE",
   },
   taskHeader: {
-    marginBottom: 12,
+    marginBottom: 16,
   },
   taskBadges: {
     flexDirection: "row",
     alignItems: "center",
     flexWrap: "wrap",
+    gap: 10,
   },
   typeBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginRight: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    gap: 4,
   },
   typeText: {
     color: "#FFFFFF",
-    fontSize: 10,
-    fontWeight: "600",
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  categoryContainer: {
+    backgroundColor: "#F8FAFC",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
   },
   taskCategory: {
-    color: "#6B7280",
+    color: "#64748B",
     fontSize: 12,
-    marginRight: 8,
-    marginLeft: 8,
+    fontWeight: "600",
   },
   statusIndicatorTask: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(59, 130, 246, 0.1)",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    backgroundColor: "rgba(27, 37, 96, 0.1)",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    gap: 6,
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
     borderRadius: 4,
   },
   statusTextTask: {
-    fontSize: 10,
-    fontWeight: "500",
-    marginLeft: 4,
+    fontSize: 11,
+    fontWeight: "600",
+    letterSpacing: 0.5,
   },
   taskTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111827",
-    marginBottom: 8,
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#1E293B",
+    marginBottom: 12,
+    lineHeight: 24,
   },
   taskDescription: {
-    fontSize: 14,
-    color: "#6B7280",
-    lineHeight: 20,
-    marginBottom: 16,
+    fontSize: 15,
+    color: "#64748B",
+    lineHeight: 22,
+    marginBottom: 20,
   },
   taskMeta: {
+    marginBottom: 20,
+    gap: 12,
+  },
+  taskMetaRow: {
     flexDirection: "row",
-    flexWrap: "wrap",
     justifyContent: "space-between",
-    marginBottom: 12,
+    gap: 16,
   },
   taskMetaItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 4,
+    flex: 1,
+    gap: 8,
   },
   taskMetaText: {
-    fontSize: 12,
-    color: "#6B7280",
-    marginLeft: 4,
+    fontSize: 13,
+    color: "#64748B",
+    fontWeight: "500",
+    flex: 1,
   },
   taskFooter: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
-    paddingTop: 8,
+    borderTopColor: "#F1F5F9",
+    paddingTop: 16,
+    gap: 16,
   },
   readIndicator: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 6,
   },
   readDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: 6,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
   readText: {
     fontSize: 12,
-    color: "#6B7280",
+    color: "#64748B",
+    fontWeight: "500",
+  },
+  progressContainer: {
+    flex: 1,
+    alignItems: "center",
+    gap: 4,
+  },
+  progressBar: {
+    width: "100%",
+    height: 4,
+    backgroundColor: "#F1F5F9",
+    borderRadius: 2,
+    overflow: "hidden",
+  },
+  progressFill: {
+    height: "100%",
+    backgroundColor: "#1B2560",
+    borderRadius: 2,
+  },
+  progressText: {
+    fontSize: 11,
+    color: "#64748B",
+    fontWeight: "500",
   },
   tapHint: {
-    fontSize: 12,
-    color: "#3B82F6",
+    fontSize: 13,
+    color: "#1B2560",
     fontStyle: "italic",
+    fontWeight: "500",
   },
-  // Modal Styles
+  // Enhanced Modal Styles
   modalContainer: {
     flex: 1,
-    backgroundColor: "#1E3A8A",
+    backgroundColor: "#1B2560",
   },
   modalSafeArea: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#F8FAFC",
   },
   modalHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 20,
   },
   backButton: {
     padding: 8,
   },
   modalHeaderTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#FFFFFF",
   },
@@ -1482,54 +1620,59 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingHorizontal: 24,
+    paddingTop: 24,
   },
-  // Main Info Card
+  // Enhanced Main Info Card
   mainInfoCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 20,
+    borderRadius: 16,
+    padding: 24,
+    marginBottom: 24,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
   },
   badgeRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginBottom: 16,
-    gap: 8,
+    marginBottom: 20,
+    gap: 10,
   },
   priorityBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 8,
   },
   priorityText: {
     color: "#FFFFFF",
     fontSize: 12,
-    fontWeight: "600",
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
   categoryBadgeDetail: {
-    backgroundColor: "#F3F4F6",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
+    backgroundColor: "#F8FAFC",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
   },
   categoryTextDetail: {
-    color: "#6B7280",
+    color: "#64748B",
     fontSize: 12,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   detailTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
-    color: "#111827",
-    lineHeight: 28,
-    marginBottom: 12,
+    color: "#1E293B",
+    lineHeight: 30,
+    marginBottom: 16,
   },
   readStatusRow: {
     flexDirection: "row",
@@ -1539,119 +1682,117 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    marginRight: 8,
+    marginRight: 10,
   },
   readStatusText: {
     fontSize: 14,
-    color: "#6B7280",
-    fontWeight: "500",
+    color: "#64748B",
+    fontWeight: "600",
   },
-  // Quick Info Grid
   quickInfoGrid: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
   },
   quickInfoItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 12,
+    paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
+    borderBottomColor: "#F8FAFC",
   },
   quickInfoContent: {
-    marginLeft: 12,
+    marginLeft: 16,
     flex: 1,
   },
   quickInfoLabel: {
-    fontSize: 12,
-    color: "#6B7280",
-    marginBottom: 2,
-  },
-  quickInfoValue: {
-    fontSize: 14,
-    color: "#111827",
+    fontSize: 13,
+    color: "#64748B",
+    marginBottom: 4,
     fontWeight: "500",
   },
-  // Section Cards
+  quickInfoValue: {
+    fontSize: 15,
+    color: "#1E293B",
+    fontWeight: "600",
+  },
   sectionCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
   },
-  sectionHeader: {
+  sectionHeaderRow: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 16,
   },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111827",
-    marginLeft: 8,
-  },
   descriptionText: {
-    fontSize: 14,
-    color: "#6B7280",
-    lineHeight: 22,
+    fontSize: 15,
+    color: "#64748B",
+    lineHeight: 24,
+    fontWeight: "500",
   },
   detailRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
+    borderBottomColor: "#F8FAFC",
   },
   detailLabel: {
     fontSize: 14,
-    color: "#6B7280",
+    color: "#64748B",
+    fontWeight: "500",
   },
   detailValue: {
     fontSize: 14,
-    color: "#111827",
-    fontWeight: "500",
+    color: "#1E293B",
+    fontWeight: "600",
   },
-  // Instructions
   instructionsList: {
-    gap: 12,
+    gap: 16,
   },
   instructionItem: {
     flexDirection: "row",
     alignItems: "flex-start",
   },
   instructionNumber: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: "#3B82F6",
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#1B2560",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 12,
+    marginRight: 16,
   },
   instructionNumberText: {
     color: "#FFFFFF",
-    fontSize: 12,
-    fontWeight: "600",
+    fontSize: 13,
+    fontWeight: "700",
   },
   instructionText: {
-    fontSize: 14,
+    fontSize: 15,
     color: "#374151",
     flex: 1,
-    lineHeight: 20,
+    lineHeight: 22,
+    fontWeight: "500",
   },
-  // Resources
   resourceGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -1660,73 +1801,54 @@ const styles = StyleSheet.create({
   resourceItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#EBF8FF",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    gap: 6,
   },
-  resourceText: {
-    fontSize: 12,
-    color: "#1E40AF",
-    fontWeight: "500",
-  },
-  modalScrollContent: {
-    paddingBottom: 40,
-    flexGrow: 1,
-  },
-  // Notification styles
-  headerRight: {
+  resourceGrid: {
     flexDirection: "row",
-    alignItems: "center",
+    flexWrap: "wrap",
     gap: 12,
   },
-  notificationButton: {
-    padding: 4,
-  },
-  notificationIconContainer: {
-    position: "relative",
-  },
-  notificationBadge: {
-    position: "absolute",
-    top: -6,
-    right: -6,
-    backgroundColor: "#EF4444",
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: "center",
+  resourceItem: {
+    flexDirection: "row",
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: "#FFFFFF",
+    backgroundColor: "rgba(27, 37, 96, 0.1)",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    gap: 8,
+    borderWidth: 1,
+    borderColor: "rgba(27, 37, 96, 0.2)",
   },
-  notificationBadgeText: {
-    color: "#FFFFFF",
-    fontSize: 10,
-    fontWeight: "bold",
+  resourceText: {
+    fontSize: 13,
+    color: "#1B2560",
+    fontWeight: "600",
   },
-  // Notification Modal Styles
+  modalScrollContent: {
+    paddingBottom: 50,
+    flexGrow: 1,
+  },
+  // Enhanced Notification Modal Styles
   notificationModalHeaderContainer: {
     position: "relative",
     zIndex: 10,
   },
   notificationModalHeaderGradient: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0,
-    paddingBottom: 30,
+    paddingBottom: 35,
   },
   notificationModalHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 20,
   },
   notificationModalCurvedBottom: {
-    height: 30,
-    backgroundColor: "#F9FAFB",
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    marginTop: -30,
+    height: 35,
+    backgroundColor: "#F8FAFC",
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
+    marginTop: -35,
     zIndex: 5,
   },
   notificationModalContent: {
@@ -1736,190 +1858,206 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   notificationScrollContent: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 20,
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    paddingBottom: 30,
   },
-  // Notification Card Styles
+  // Enhanced Notification Card Styles
   notificationCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 16,
+    padding: 20,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: "#E2E8F0",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
   notificationHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: 12,
+    marginBottom: 16,
     position: "relative",
   },
   notificationLeft: {
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
-    marginRight: 8,
+    marginRight: 12,
+    flexWrap: "wrap",
+    gap: 8,
   },
   statusIndicator: {
     width: 12,
     height: 12,
     borderRadius: 6,
-    marginRight: 12,
+    marginRight: 8,
   },
   categoryBadge: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F3F4F6",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginRight: 8,
+    backgroundColor: "#F8FAFC",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
   },
   categoryText: {
-    color: "#6B7280",
+    color: "#64748B",
     fontSize: 12,
     marginLeft: 4,
+    fontWeight: "500",
   },
   taskId: {
-    color: "#3B82F6",
+    color: "#1B2560",
     fontSize: 12,
-    fontWeight: "500",
+    fontWeight: "600",
     flexShrink: 1,
   },
   notificationTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111827",
-    marginBottom: 12,
-    lineHeight: 22,
+    fontSize: 17,
+    fontWeight: "700",
+    color: "#1E293B",
+    marginBottom: 16,
+    lineHeight: 24,
   },
   notificationDetails: {
-    marginBottom: 12,
+    marginBottom: 16,
+  },
+  detailText: {
+    fontSize: 14,
+    color: "#64748B",
+    marginBottom: 6,
+    fontWeight: "500",
   },
   assignedSection: {
     flexDirection: "row",
-    marginBottom: 12,
+    marginBottom: 16,
   },
   assignedLabel: {
     fontSize: 14,
-    color: "#6B7280",
+    color: "#64748B",
+    fontWeight: "500",
   },
   assignedValue: {
     fontSize: 14,
-    color: "#3B82F6",
-    fontWeight: "500",
+    color: "#1B2560",
+    fontWeight: "600",
   },
   notificationFooter: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
-    paddingTop: 12,
+    borderTopColor: "#F1F5F9",
+    paddingTop: 16,
   },
   timeText: {
-    fontSize: 12,
-    color: "#6B7280",
+    fontSize: 13,
+    color: "#64748B",
+    fontWeight: "500",
   },
   dropdownMenu: {
     position: "absolute",
-    top: 30,
+    top: 35,
     right: 0,
     backgroundColor: "#FFFFFF",
-    borderRadius: 8,
+    borderRadius: 12,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
     zIndex: 1000,
-    minWidth: 120,
+    minWidth: 140,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: "#E2E8F0",
   },
   dropdownItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
+    borderBottomColor: "#F8FAFC",
   },
   dropdownText: {
     fontSize: 14,
     color: "#374151",
-    marginLeft: 8,
+    marginLeft: 10,
+    fontWeight: "500",
   },
   notificationTabContainer: {
     flexDirection: "row",
     backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
+    borderBottomColor: "#E2E8F0",
   },
   notificationTab: {
     flex: 1,
-    paddingVertical: 16,
-    paddingHorizontal: 12,
-    borderBottomWidth: 2,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 18,
+    paddingHorizontal: 16,
+    gap: 10,
+    borderBottomWidth: 3,
     borderBottomColor: "transparent",
   },
   activeNotificationTab: {
-    borderBottomColor: "#1E3A8A",
+    borderBottomColor: "#1B2560",
   },
   notificationTabText: {
-    fontSize: 14,
-    color: "#6B7280",
-    fontWeight: "500",
-    textAlign: "center",
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#64748B",
   },
   activeNotificationTabText: {
-    color: "#1E3A8A",
-    fontWeight: "600",
+    color: "#1B2560",
   },
-  // Empty State
+  // Enhanced Empty State
   emptyState: {
     alignItems: "center",
-    paddingVertical: 60,
+    paddingVertical: 80,
   },
   emptyStateTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#6B7280",
-    marginTop: 16,
-    marginBottom: 8,
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#64748B",
+    marginTop: 20,
+    marginBottom: 12,
   },
   emptyStateText: {
-    fontSize: 14,
-    color: "#9CA3AF",
+    fontSize: 15,
+    color: "#94A3B8",
     textAlign: "center",
+    fontWeight: "500",
   },
-  // Archive Button
+  // Enhanced Archive Button
   archiveButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#6B7280",
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    marginBottom: 20,
-    gap: 8,
+    backgroundColor: "#64748B",
+    paddingVertical: 18,
+    paddingHorizontal: 28,
+    borderRadius: 16,
+    marginBottom: 24,
+    gap: 10,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   archiveButtonText: {
     color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "700",
   },
 })

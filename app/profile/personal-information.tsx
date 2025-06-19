@@ -58,12 +58,12 @@ export default function PersonalInformationScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" translucent={false} hidden={false} />
+      <StatusBar barStyle="light-content" backgroundColor="#1B2560" translucent={false} hidden={false} />
 
       {/* Updated Header with curved bottom */}
       <View style={styles.headerContainer}>
         <LinearGradient
-          colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+          colors={["#1B2560", "#FF4D4D"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.headerGradient}
@@ -155,10 +155,10 @@ export default function PersonalInformationScreen() {
       {/* Edit Modal */}
       <Modal animationType="slide" transparent={false} visible={editModalVisible} onRequestClose={handleCancelEdit}>
         <View style={styles.modalContainer}>
-          <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+          <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
           <SafeAreaView style={styles.modalSafeArea}>
             <LinearGradient
-              colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+              colors={["#1B2560", "#FF4D4D"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.modalHeader}
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1E3A8A",
+    color: "#1B2560",
     marginBottom: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#E5E7EB",
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
   },
   editButton: {
     flexDirection: "row",
-    backgroundColor: "#1E3A8A",
+    backgroundColor: "#1B2560",
     borderRadius: 8,
     paddingVertical: 12,
     alignItems: "center",
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
   // Modal Styles
   modalContainer: {
     flex: 1,
-    backgroundColor: "#1E3A8A",
+    backgroundColor: "#1B2560",
   },
   modalSafeArea: {
     flex: 1,
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
   editSectionTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1E3A8A",
+    color: "#1B2560",
     marginBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#E5E7EB",

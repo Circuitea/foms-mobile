@@ -327,13 +327,13 @@ export default function HomeScreen() {
     >
       <View style={styles.notificationHeader}>
         <View style={styles.notificationLeft}>
-          <View style={[styles.statusIndicator, { backgroundColor: notification.isRead ? "#9CA3AF" : "#3B82F6" }]} />
+          <View style={[styles.statusIndicator, { backgroundColor: notification.isRead ? "#9CA3AF" : "#FF4D4D" }]} />
           <View
             style={[
               styles.typeBadge,
               {
                 backgroundColor:
-                  notification.type === "URGENT" ? "#EF4444" : notification.type === "HIGH" ? "#F59E0B" : "#1E3A8A",
+                  notification.type === "URGENT" ? "#FF4D4D" : notification.type === "HIGH" ? "#F59E0B" : "#1B2560",
               },
             ]}
           >
@@ -372,8 +372,8 @@ export default function HomeScreen() {
               </TouchableOpacity>
             )}
             <TouchableOpacity style={styles.dropdownItem} onPress={() => handleDeleteNotification(notification.id)}>
-              <Ionicons name="trash-outline" size={16} color="#EF4444" />
-              <Text style={[styles.dropdownText, { color: "#EF4444" }]}>Delete</Text>
+              <Ionicons name="trash-outline" size={16} color="#FF4D4D" />
+              <Text style={[styles.dropdownText, { color: "#FF4D4D" }]}>Delete</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -415,12 +415,12 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" translucent={false} hidden={false} />
+      <StatusBar barStyle="light-content" backgroundColor="#1B2560" translucent={false} hidden={false} />
 
-      {/* Updated Header with Notification Bell */}
+      {/* Updated Header with New Gradient Colors */}
       <View style={styles.headerContainer}>
         <LinearGradient
-          colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+          colors={["#1B2560", "#FF4D4D"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.headerGradient}
@@ -430,16 +430,19 @@ export default function HomeScreen() {
               <View style={styles.headerLeft}>
                 <View style={styles.logoContainer}>
                   <View style={styles.logoCircle}>
-                    <Ionicons name="shield" size={24} color="#FFFFFF" />
+                    <Ionicons name="shield" size={28} color="#FFFFFF" />
                   </View>
-                  <Text style={styles.logoText}>CDRRMO</Text>
+                  <View style={styles.logoTextContainer}>
+                    <Text style={styles.logoText}>CDRRMO</Text>
+                    <Text style={styles.logoSubtext}>Emergency Response</Text>
+                  </View>
                 </View>
               </View>
               <View style={styles.headerRight}>
-                {/* Notification Bell Button */}
+                {/* Enhanced Notification Bell Button */}
                 <TouchableOpacity style={styles.notificationButton} onPress={() => setNotificationsVisible(true)}>
                   <View style={styles.notificationIconContainer}>
-                    <Ionicons name="notifications" size={20} color="#FFFFFF" />
+                    <Ionicons name="notifications" size={24} color="#FFFFFF" />
                     {getUnreadNotificationsCount() > 0 && (
                       <View style={styles.notificationBadge}>
                         <Text style={styles.notificationBadgeText}>
@@ -451,7 +454,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.profileButton}>
                   <View style={styles.profileCircle}>
-                    <Ionicons name="person" size={20} color="#FFFFFF" />
+                    <Ionicons name="person" size={22} color="#FFFFFF" />
                   </View>
                 </TouchableOpacity>
               </View>
@@ -459,11 +462,11 @@ export default function HomeScreen() {
           </SafeAreaView>
         </LinearGradient>
 
-        {/* Curved bottom part */}
+        {/* Enhanced curved bottom part */}
         <View style={styles.curvedBottom} />
       </View>
 
-      {/* Content with proper spacing */}
+      {/* Content with improved spacing */}
       <View style={styles.contentWrapper}>
         <ScrollView
           ref={scrollViewRef}
@@ -471,24 +474,29 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
+          {/* Enhanced Greeting Section */}
           <View style={styles.greetingContainer}>
-            <Text style={styles.greeting}>Hello, {"{Name}"}!</Text>
+            <Text style={styles.greeting}>Good Morning, Officer!</Text>
+            <Text style={styles.subGreeting}>Ready to keep our community safe today</Text>
             <View style={styles.separator} />
           </View>
 
-          {/* Personnel Tracking Section */}
+          {/* Enhanced Personnel Tracking Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>PERSONNEL TRACKING</Text>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="people-outline" size={20} color="#1B2560" />
+              <Text style={styles.sectionTitle}>PERSONNEL TRACKING</Text>
+            </View>
             <View style={styles.metricsGrid}>
-              <View style={styles.metricCard}>
-                <View style={[styles.iconContainer, { backgroundColor: "#3B82F6" }]}>
+              <View style={[styles.metricCard, styles.totalStaffCard]}>
+                <View style={[styles.iconContainer, { backgroundColor: "#1B2560" }]}>
                   <Ionicons name="people" size={16} color="white" />
                 </View>
                 <Text style={styles.metricLabel}>Total Staff</Text>
                 <Text style={styles.metricValue}>10</Text>
               </View>
 
-              <View style={styles.metricCard}>
+              <View style={[styles.metricCard, styles.activeCard]}>
                 <View style={[styles.iconContainer, { backgroundColor: "#10B981" }]}>
                   <Ionicons name="checkmark-circle" size={16} color="white" />
                 </View>
@@ -496,7 +504,7 @@ export default function HomeScreen() {
                 <Text style={styles.metricValue}>5</Text>
               </View>
 
-              <View style={styles.metricCard}>
+              <View style={[styles.metricCard, styles.onDutyCard]}>
                 <View style={[styles.iconContainer, { backgroundColor: "#F59E0B" }]}>
                   <Ionicons name="time" size={16} color="white" />
                 </View>
@@ -504,8 +512,8 @@ export default function HomeScreen() {
                 <Text style={styles.metricValue}>5</Text>
               </View>
 
-              <View style={styles.metricCard}>
-                <View style={[styles.iconContainer, { backgroundColor: "#8B5CF6" }]}>
+              <View style={[styles.metricCard, styles.onSiteCard]}>
+                <View style={[styles.iconContainer, { backgroundColor: "#FF4D4D" }]}>
                   <Ionicons name="location" size={16} color="white" />
                 </View>
                 <Text style={styles.metricLabel}>On-site</Text>
@@ -514,29 +522,47 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* Map Placeholder */}
-          <TouchableOpacity style={styles.mapContainer} onPress={handleMapClick} activeOpacity={0.8}>
-            <View style={styles.mapPlaceholder}>
-              <Ionicons name="map" size={48} color="#9CA3AF" />
-              <Text style={styles.mapPlaceholderText}>Interactive Map</Text>
-              {location && (
-                <View style={styles.currentLocation}>
-                  <Text style={styles.coordinateText}>
-                    Current: {location.coords.latitude.toFixed(6)}, {location.coords.longitude.toFixed(6)}
-                  </Text>
-                </View>
-              )}
-              <Text style={styles.mapClickHint}>Tap to open full screen map</Text>
-            </View>
-          </TouchableOpacity>
-
-          {/* Active Tasks */}
+          {/* Enhanced Map Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>ACTIVE TASK</Text>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="map-outline" size={20} color="#1B2560" />
+              <Text style={styles.sectionTitle}>LIVE TRACKING MAP</Text>
+            </View>
+            <TouchableOpacity style={styles.mapContainer} onPress={handleMapClick} activeOpacity={0.8}>
+              <View style={styles.mapPlaceholder}>
+                <View style={styles.mapIconContainer}>
+                  <Ionicons name="map" size={56} color="#FF4D4D" />
+                </View>
+                <Text style={styles.mapPlaceholderText}>Interactive Personnel Map</Text>
+                <Text style={styles.mapDescription}>Real-time location tracking of all field personnel</Text>
+                {location && (
+                  <View style={styles.currentLocation}>
+                    <View style={styles.locationIcon}>
+                      <Ionicons name="location" size={16} color="#FF4D4D" />
+                    </View>
+                    <Text style={styles.coordinateText}>
+                      Current: {location.coords.latitude.toFixed(6)}, {location.coords.longitude.toFixed(6)}
+                    </Text>
+                  </View>
+                )}
+                <View style={styles.mapActionButton}>
+                  <Text style={styles.mapActionText}>Tap to open full screen</Text>
+                  <Ionicons name="expand-outline" size={16} color="#FFFFFF" />
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          {/* Enhanced Active Tasks Section */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="clipboard-outline" size={20} color="#1B2560" />
+              <Text style={styles.sectionTitle}>ACTIVE TASKS</Text>
+            </View>
+
             <TouchableOpacity
-              style={[styles.taskCard, { marginTop: 16 }]} // Add marginTop for spacing
+              style={styles.taskCard}
               onPress={() => {
-                // Show task details modal
                 const taskData: TaskData = {
                   id: "4",
                   type: "URGENT",
@@ -561,11 +587,12 @@ export default function HomeScreen() {
             >
               <View style={styles.taskHeader}>
                 <View style={styles.urgentBadge}>
+                  <Ionicons name="warning" size={12} color="#FFFFFF" />
                   <Text style={styles.urgentText}>URGENT</Text>
                 </View>
                 <Text style={styles.taskType}>Emergency Response</Text>
                 <View style={styles.statusBadge}>
-                  <Ionicons name="ellipse" size={10} color="#3B82F6" />
+                  <View style={styles.statusDot} />
                   <Text style={styles.statusText}>IN PROGRESS</Text>
                 </View>
               </View>
@@ -577,51 +604,51 @@ export default function HomeScreen() {
                 Greenhills.
               </Text>
 
+              {/* Replace the existing taskFooter section (around lines 580-610) with: */}
               <View style={styles.taskFooter}>
                 <View style={styles.taskLocation}>
-                  <Ionicons name="location" size={14} color="#EF4444" />
+                  <Ionicons name="location" size={16} color="#FF4D4D" />
                   <Text style={styles.taskLocationText}>Barangay Greenhills</Text>
                 </View>
 
                 <View style={styles.taskMeta}>
-                  <View style={styles.taskTime}>
+                  <View style={styles.taskMetaItem}>
                     <Ionicons name="time-outline" size={14} color="#6B7280" />
-                    <Text style={styles.taskTimeText}>6 hours</Text>
+                    <Text style={styles.taskMetaText}>6 hours</Text>
                   </View>
 
-                  <View style={styles.taskAssigned}>
+                  <View style={styles.taskMetaItem}>
                     <Ionicons name="people-outline" size={14} color="#6B7280" />
-                    <Text style={styles.taskAssignedText}>1 assigned</Text>
+                    <Text style={styles.taskMetaText}>1 assigned</Text>
                   </View>
 
-                  <View style={styles.taskDueDate}>
+                  <View style={styles.taskMetaItem}>
                     <Ionicons name="calendar-outline" size={14} color="#6B7280" />
-                    <Text style={styles.taskDueDateText}>Due: 1/16/2024</Text>
+                    <Text style={styles.taskMetaText}>Due: 1/16/2024</Text>
                   </View>
                 </View>
-              </View>
 
-              <View style={styles.tapHintContainer}>
-                <Text style={styles.tapHint}>Tap for details</Text>
+                <View style={styles.taskActionContainer}>
+                  <Text style={styles.tapHint}>Tap for details</Text>
+                </View>
               </View>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.viewAllButton}
               onPress={() => {
-                // Navigate to tasks screen - active tasks tab
                 router.push("/tasks")
               }}
               activeOpacity={0.7}
             >
               <Text style={styles.viewAllText}>View all tasks</Text>
-              <Ionicons name="arrow-forward" size={16} color="#3B82F6" />
+              <Ionicons name="arrow-forward" size={18} color="#1B2560" />
             </TouchableOpacity>
           </View>
         </ScrollView>
       </View>
 
-      {/* Notifications Modal */}
+      {/* Notifications Modal with Updated Colors */}
       <Modal
         animationType="slide"
         transparent={false}
@@ -629,12 +656,12 @@ export default function HomeScreen() {
         onRequestClose={() => setNotificationsVisible(false)}
       >
         <View style={styles.modalContainer}>
-          <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+          <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
           <SafeAreaView style={styles.modalSafeArea}>
-            {/* Header with curved bottom */}
+            {/* Header with updated gradient */}
             <View style={styles.notificationModalHeaderContainer}>
               <LinearGradient
-                colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+                colors={["#1B2560", "#FF4D4D"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.notificationModalHeaderGradient}
@@ -655,7 +682,7 @@ export default function HomeScreen() {
                 style={[styles.tab, activeTab === "all" && styles.activeTab]}
                 onPress={() => setActiveTab("all")}
               >
-                <Ionicons name="notifications-outline" size={20} color={activeTab === "all" ? "#3B82F6" : "#6B7280"} />
+                <Ionicons name="notifications-outline" size={20} color={activeTab === "all" ? "#1B2560" : "#6B7280"} />
                 <Text style={[styles.tabText, activeTab === "all" && styles.activeTabText]}>
                   All ({notifications.length})
                 </Text>
@@ -664,7 +691,7 @@ export default function HomeScreen() {
                 style={[styles.tab, activeTab === "archived" && styles.activeTab]}
                 onPress={() => setActiveTab("archived")}
               >
-                <Ionicons name="archive-outline" size={20} color={activeTab === "archived" ? "#3B82F6" : "#6B7280"} />
+                <Ionicons name="archive-outline" size={20} color={activeTab === "archived" ? "#1B2560" : "#6B7280"} />
                 <Text style={[styles.tabText, activeTab === "archived" && styles.activeTabText]}>
                   Archived ({archivedNotifications.length})
                 </Text>
@@ -673,17 +700,15 @@ export default function HomeScreen() {
 
             {activeTab === "all" && (
               <View style={styles.sectionHeaderContainer}>
-                <View style={styles.sectionHeader}>
-                  {/* Notification Bell + Title */}
+                <View style={styles.sectionHeaderRow}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Ionicons name="notifications-outline" size={20} color="#3B82F6" style={{ marginRight: 6 }} />
+                    <Ionicons name="notifications-outline" size={20} color="#1B2560" style={{ marginRight: 6 }} />
                     <Text style={styles.sectionTitle}>All Notifications</Text>
                   </View>
 
-                  {/* Mark All as Read Button */}
                   {notifications.length > 0 && (
                     <TouchableOpacity style={styles.markAllButton} onPress={handleMarkAllAsRead}>
-                      <Ionicons name="checkmark-done" size={16} color="#3B82F6" />
+                      <Ionicons name="checkmark-done" size={16} color="#1B2560" />
                       <Text style={styles.markAllButtonText}>Mark All as Read</Text>
                     </TouchableOpacity>
                   )}
@@ -724,7 +749,7 @@ export default function HomeScreen() {
         </View>
       </Modal>
 
-      {/* Notification Detail Modal */}
+      {/* Notification Detail Modal with Updated Colors */}
       {selectedNotification && (
         <Modal
           animationType="slide"
@@ -733,10 +758,10 @@ export default function HomeScreen() {
           onRequestClose={() => setNotificationDetailVisible(false)}
         >
           <View style={styles.modalContainer}>
-            <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+            <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
             <SafeAreaView style={styles.modalSafeArea}>
               <LinearGradient
-                colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+                colors={["#1B2560", "#FF4D4D"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.modalHeader}
@@ -786,10 +811,10 @@ export default function HomeScreen() {
                         {
                           backgroundColor:
                             selectedNotification.type === "URGENT"
-                              ? "#EF4444"
+                              ? "#FF4D4D"
                               : selectedNotification.type === "HIGH"
                                 ? "#F59E0B"
-                                : "#1E3A8A",
+                                : "#1B2560",
                         },
                       ]}
                     >
@@ -814,14 +839,14 @@ export default function HomeScreen() {
                 {/* Quick Info Grid */}
                 <View style={styles.quickInfoGrid}>
                   <View style={styles.quickInfoItem}>
-                    <Ionicons name="location" size={20} color="#EF4444" />
+                    <Ionicons name="location" size={20} color="#FF4D4D" />
                     <View style={styles.quickInfoContent}>
                       <Text style={styles.quickInfoLabel}>Location</Text>
                       <Text style={styles.quickInfoValue}>{selectedNotification.location}</Text>
                     </View>
                   </View>
                   <View style={styles.quickInfoItem}>
-                    <Ionicons name="time" size={20} color="#3B82F6" />
+                    <Ionicons name="time" size={20} color="#1B2560" />
                     <View style={styles.quickInfoContent}>
                       <Text style={styles.quickInfoLabel}>Time</Text>
                       <Text style={styles.quickInfoValue}>{selectedNotification.time}</Text>
@@ -845,8 +870,8 @@ export default function HomeScreen() {
 
                 {/* Description Section */}
                 <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeader}>
-                    <Ionicons name="document-text" size={20} color="#3B82F6" />
+                  <View style={styles.sectionHeaderRow}>
+                    <Ionicons name="document-text" size={20} color="#1B2560" />
                     <Text style={styles.sectionTitle}>Description</Text>
                   </View>
                   <Text style={styles.descriptionText}>{selectedNotification.description}</Text>
@@ -854,8 +879,8 @@ export default function HomeScreen() {
 
                 {/* Additional Details */}
                 <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeader}>
-                    <Ionicons name="information-circle" size={20} color="#3B82F6" />
+                  <View style={styles.sectionHeaderRow}>
+                    <Ionicons name="information-circle" size={20} color="#1B2560" />
                     <Text style={styles.sectionTitle}>Additional Information</Text>
                   </View>
                   <View style={styles.detailRow}>
@@ -877,7 +902,7 @@ export default function HomeScreen() {
         </Modal>
       )}
 
-      {/* Full Screen Map Modal */}
+      {/* Full Screen Map Modal with Updated Colors */}
       <Modal
         animationType="slide"
         transparent={false}
@@ -885,12 +910,11 @@ export default function HomeScreen() {
         onRequestClose={handleBackFromFullScreen}
       >
         <View style={styles.fullScreenContainer}>
-          <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+          <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
           <SafeAreaView style={styles.fullScreenSafeArea}>
-            {/* Add curved header */}
             <View style={styles.fullScreenHeaderContainer}>
               <LinearGradient
-                colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+                colors={["#1B2560", "#FF4D4D"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.fullScreenHeaderGradient}
@@ -908,7 +932,7 @@ export default function HomeScreen() {
 
             <View style={styles.fullScreenMapContainer}>
               <View style={styles.fullScreenMapPlaceholder}>
-                <Ionicons name="map" size={80} color="#9CA3AF" />
+                <Ionicons name="map" size={80} color="#FF4D4D" />
                 <Text style={styles.fullScreenMapText}>Full Screen Map</Text>
                 {location && (
                   <View style={styles.fullScreenCurrentLocation}>
@@ -929,7 +953,7 @@ export default function HomeScreen() {
         </View>
       </Modal>
 
-      {/* Task Detail Modal */}
+      {/* Task Detail Modal with Updated Colors */}
       {selectedTask && (
         <Modal
           animationType="slide"
@@ -938,10 +962,10 @@ export default function HomeScreen() {
           onRequestClose={() => setTaskDetailModalVisible(false)}
         >
           <View style={styles.modalContainer}>
-            <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+            <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
             <SafeAreaView style={styles.modalSafeArea}>
               <LinearGradient
-                colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+                colors={["#1B2560", "#FF4D4D"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.modalHeader}
@@ -961,7 +985,7 @@ export default function HomeScreen() {
                 {/* Main Info Card */}
                 <View style={styles.mainInfoCard}>
                   <View style={styles.badgeRow}>
-                    <View style={[styles.priorityBadge, { backgroundColor: "#EF4444" }]}>
+                    <View style={[styles.priorityBadge, { backgroundColor: "#FF4D4D" }]}>
                       <Text style={styles.priorityText}>URGENT</Text>
                     </View>
                     <View style={styles.categoryBadgeDetail}>
@@ -978,14 +1002,14 @@ export default function HomeScreen() {
                 {/* Quick Info Grid */}
                 <View style={styles.quickInfoGrid}>
                   <View style={styles.quickInfoItem}>
-                    <Ionicons name="location" size={20} color="#EF4444" />
+                    <Ionicons name="location" size={20} color="#FF4D4D" />
                     <View style={styles.quickInfoContent}>
                       <Text style={styles.quickInfoLabel}>Location</Text>
                       <Text style={styles.quickInfoValue}>{selectedTask.location}</Text>
                     </View>
                   </View>
                   <View style={styles.quickInfoItem}>
-                    <Ionicons name="time" size={20} color="#3B82F6" />
+                    <Ionicons name="time" size={20} color="#1B2560" />
                     <View style={styles.quickInfoContent}>
                       <Text style={styles.quickInfoLabel}>Duration</Text>
                       <Text style={styles.quickInfoValue}>{selectedTask.time}</Text>
@@ -1009,8 +1033,8 @@ export default function HomeScreen() {
 
                 {/* Description Section */}
                 <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeader}>
-                    <Ionicons name="document-text" size={20} color="#3B82F6" />
+                  <View style={styles.sectionHeaderRow}>
+                    <Ionicons name="document-text" size={20} color="#1B2560" />
                     <Text style={styles.sectionTitle}>Description</Text>
                   </View>
                   <Text style={styles.descriptionText}>{selectedTask.description}</Text>
@@ -1018,8 +1042,8 @@ export default function HomeScreen() {
 
                 {/* Additional Information */}
                 <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeader}>
-                    <Ionicons name="information-circle" size={20} color="#3B82F6" />
+                  <View style={styles.sectionHeaderRow}>
+                    <Ionicons name="information-circle" size={20} color="#1B2560" />
                     <Text style={styles.sectionTitle}>Additional Information</Text>
                   </View>
                   <View style={styles.detailRow}>
@@ -1042,8 +1066,8 @@ export default function HomeScreen() {
 
                 {/* Instructions */}
                 <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeader}>
-                    <Ionicons name="list" size={20} color="#3B82F6" />
+                  <View style={styles.sectionHeaderRow}>
+                    <Ionicons name="list" size={20} color="#1B2560" />
                     <Text style={styles.sectionTitle}>Instructions</Text>
                   </View>
                   <View style={styles.instructionsList}>
@@ -1076,25 +1100,25 @@ export default function HomeScreen() {
 
                 {/* Required Resources */}
                 <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeader}>
-                    <Ionicons name="construct" size={20} color="#3B82F6" />
+                  <View style={styles.sectionHeaderRow}>
+                    <Ionicons name="construct" size={20} color="#1B2560" />
                     <Text style={styles.sectionTitle}>Required Resources</Text>
                   </View>
                   <View style={styles.resourceGrid}>
                     <View style={styles.resourceItem}>
-                      <Ionicons name="boat" size={16} color="#3B82F6" />
+                      <Ionicons name="boat" size={16} color="#1B2560" />
                       <Text style={styles.resourceText}>Rescue boats</Text>
                     </View>
                     <View style={styles.resourceItem}>
-                      <Ionicons name="shield" size={16} color="#3B82F6" />
+                      <Ionicons name="shield" size={16} color="#1B2560" />
                       <Text style={styles.resourceText}>Life vests</Text>
                     </View>
                     <View style={styles.resourceItem}>
-                      <Ionicons name="radio" size={16} color="#3B82F6" />
+                      <Ionicons name="radio" size={16} color="#1B2560" />
                       <Text style={styles.resourceText}>Communication radios</Text>
                     </View>
                     <View style={styles.resourceItem}>
-                      <Ionicons name="medical" size={16} color="#3B82F6" />
+                      <Ionicons name="medical" size={16} color="#1B2560" />
                       <Text style={styles.resourceText}>First aid kits</Text>
                     </View>
                   </View>
@@ -1111,35 +1135,36 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#F8FAFC",
   },
-  // Fixed Header styles with proper curved bottom
+  // Enhanced Header styles
   headerContainer: {
     position: "relative",
     zIndex: 10,
+    elevation: 8,
   },
   headerGradient: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0,
-    paddingBottom: 30, // Increased padding for better curve
+    paddingBottom: 35,
   },
   headerSafeArea: {
     backgroundColor: "transparent",
   },
   curvedBottom: {
-    height: 30, // Increased height for better curve
-    backgroundColor: "#F9FAFB",
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    marginTop: -30,
+    height: 35,
+    backgroundColor: "#F8FAFC",
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
+    marginTop: -35,
     zIndex: 5,
   },
   headerContent: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    paddingTop: Platform.OS === "ios" ? 16 : 16,
+    paddingHorizontal: 24,
+    paddingVertical: 20,
+    paddingTop: Platform.OS === "ios" ? 20 : 20,
   },
   headerLeft: {
     flexDirection: "row",
@@ -1150,196 +1175,455 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logoCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: "rgba(255, 255, 255, 0.25)",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 12,
-  },
-  logoText: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  headerRight: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  notificationButton: {
-    padding: 4,
-  },
-  notificationIconContainer: {
-    position: "relative",
-  },
-  notificationBadge: {
-    position: "absolute",
-    top: -6,
-    right: -6,
-    backgroundColor: "#EF4444",
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 2,
-    borderColor: "#FFFFFF",
-  },
-  notificationBadgeText: {
-    color: "#FFFFFF",
-    fontSize: 10,
-    fontWeight: "bold",
-  },
-  profileButton: {
-    padding: 4,
-  },
-  profileCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  // Fixed content wrapper
-  contentWrapper: {
-    flex: 1,
-    marginTop: -15, // Overlap with curve
-  },
-  content: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: 20,
-    paddingTop: 25, // Space from curved header
-    paddingBottom: 20,
-  },
-  greetingContainer: {
-    marginBottom: 20,
-  },
-  greeting: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#1E3A8A",
-    marginBottom: 12,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: "#E5E7EB",
-    width: "100%",
-  },
-  section: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#1E3A8A",
-    marginBottom: 16, // Changed from 20 to 16 for better spacing
-  },
-  metricsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    marginTop: 8,
-  },
-  metricCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 8,
-    padding: 12,
-    width: "23%",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  iconContainer: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  metricLabel: {
-    fontSize: 10,
-    color: "#6B7280",
-    marginBottom: 4,
-    textAlign: "center",
-  },
-  metricValue: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#111827",
-  },
-  mapContainer: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 8,
-    overflow: "hidden",
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
+    marginRight: 16,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
-  mapPlaceholder: {
-    height: 200,
+  logoTextContainer: {
+    flexDirection: "column",
+  },
+  logoText: {
+    color: "white",
+    fontSize: 22,
+    fontWeight: "bold",
+    letterSpacing: 0.5,
+  },
+  logoSubtext: {
+    color: "rgba(255, 255, 255, 0.8)",
+    fontSize: 12,
+    fontWeight: "500",
+    marginTop: 2,
+  },
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  notificationButton: {
+    padding: 6,
+  },
+  notificationIconContainer: {
+    position: "relative",
+  },
+  notificationBadge: {
+    position: "absolute",
+    top: -8,
+    right: -8,
+    backgroundColor: "#FF4D4D",
+    borderRadius: 12,
+    minWidth: 24,
+    height: 24,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F3F4F6",
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  notificationBadgeText: {
+    color: "#FFFFFF",
+    fontSize: 11,
+    fontWeight: "bold",
+  },
+  profileButton: {
+    padding: 6,
+  },
+  profileCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255, 255, 255, 0.25)",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  // Enhanced content wrapper
+  contentWrapper: {
+    flex: 1,
+    marginTop: -20,
+  },
+  content: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 24,
+    paddingTop: 30,
+    paddingBottom: 30,
+  },
+  // Enhanced greeting section
+  greetingContainer: {
+    marginBottom: 32,
+  },
+  greeting: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#1B2560",
+    marginBottom: 8,
+    letterSpacing: -0.5,
+  },
+  subGreeting: {
+    fontSize: 16,
+    color: "#64748B",
+    marginBottom: 20,
+    fontWeight: "500",
+  },
+  separator: {
+    height: 2,
+    backgroundColor: "#E2E8F0",
+    width: "100%",
+    borderRadius: 1,
+  },
+  // Enhanced section styles
+  section: {
+    marginBottom: 32,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  sectionHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#1B2560",
+    marginLeft: 8,
+    letterSpacing: 0.5,
+  },
+  // Enhanced metrics grid
+  metricsGrid: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 4, // Changed from 8 to 4
+  },
+  metricCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 16, // Changed from 12 to 16
+    width: "24%", // Changed from "23%" to "24%"
+    aspectRatio: 1, // Add this line to make boxes square
+    alignItems: "center",
+    justifyContent: "center", // Add this to center content vertically
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
+  },
+  totalStaffCard: {
+    borderLeftWidth: 4,
+    borderLeftColor: "#1B2560",
+  },
+  activeCard: {
+    borderLeftWidth: 4,
+    borderLeftColor: "#10B981",
+  },
+  onDutyCard: {
+    borderLeftWidth: 4,
+    borderLeftColor: "#F59E0B",
+  },
+  onSiteCard: {
+    borderLeftWidth: 4,
+    borderLeftColor: "#FF4D4D",
+  },
+  iconContainer: {
+    width: 24, // Changed from 32 to 28
+    height: 24, // Changed from 32 to 28
+    borderRadius: 12, // Changed from 16 to 14
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 6, // Changed from 12 to 8
+  },
+  metricLabel: {
+    fontSize: 10, // Changed from 12 to 11
+    color: "#64748B",
+    marginBottom: 4, // Changed from 6 to 4
+    textAlign: "center",
+    fontWeight: "500",
+  },
+  metricValue: {
+    fontSize: 18, // Changed from 24 to 20
+    fontWeight: "bold",
+    color: "#1E293B",
+    marginBottom: 0, // Changed from 4 to 2
+  },
+  metricChange: {
+    fontSize: 9, // Changed from 10 to 9
+    color: "#64748B",
+    textAlign: "center",
+    fontWeight: "500",
+  },
+  // Enhanced map container
+  mapContainer: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    overflow: "hidden",
+    marginBottom: 20,
+    marginHorizontal: 4, // Added horizontal margin for equal spacing
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 16,
+    elevation: 6,
+  },
+  mapPlaceholder: {
+    height: 280, // Increased from 240 to 280 for better proportions
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F8FAFC",
+    position: "relative",
+    paddingHorizontal: 20, // Added horizontal padding for equal frame spacing
+  },
+  mapIconContainer: {
+    marginBottom: 16,
   },
   mapPlaceholderText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#6B7280",
-    marginTop: 12,
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#1B2560",
+    marginBottom: 8,
+  },
+  mapDescription: {
+    fontSize: 14,
+    color: "#64748B",
+    textAlign: "center",
+    marginBottom: 20,
+    paddingHorizontal: 20,
   },
   currentLocation: {
-    marginTop: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    backgroundColor: "rgba(59, 130, 246, 0.1)",
-    borderRadius: 6,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: "rgba(255, 77, 77, 0.1)",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255, 77, 77, 0.2)",
+  },
+  locationIcon: {
+    marginRight: 8,
   },
   coordinateText: {
-    fontSize: 10,
-    color: "#3B82F6",
-    fontFamily: "monospace",
-  },
-  mapClickHint: {
     fontSize: 12,
-    color: "#9CA3AF",
-    marginTop: 8,
-    fontStyle: "italic",
+    color: "#FF4D4D",
+    fontFamily: "monospace",
+    fontWeight: "600",
   },
-  // Full Screen Map Styles
+  mapActionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#1B2560",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 25,
+    gap: 8,
+  },
+  mapActionText: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  // Enhanced task card
+  taskCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 24,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 16,
+    elevation: 6,
+  },
+  taskHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  urgentBadge: {
+    backgroundColor: "#FF4D4D",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  urgentText: {
+    color: "#FFFFFF",
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  taskType: {
+    color: "#64748B",
+    fontSize: 13,
+    fontWeight: "500",
+    flex: 1,
+  },
+  statusBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(27, 37, 96, 0.1)",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    gap: 6,
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#1B2560",
+  },
+  statusText: {
+    color: "#1B2560",
+    fontSize: 11,
+    fontWeight: "600",
+    letterSpacing: 0.5,
+  },
+  taskTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#1E293B",
+    marginBottom: 16,
+    lineHeight: 24,
+  },
+  taskDescription: {
+    fontSize: 15,
+    color: "#64748B",
+    lineHeight: 22,
+    marginBottom: 24,
+  },
+  taskFooter: {
+    borderTopWidth: 1,
+    borderTopColor: "#F1F5F9",
+    paddingTop: 20,
+    marginBottom: 16,
+  },
+  taskLocation: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  taskLocationText: {
+    color: "#64748B",
+    fontSize: 14,
+    marginLeft: 8,
+    fontWeight: "500",
+  },
+  taskMeta: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+    gap: 12,
+  },
+  taskActionContainer: {
+    borderTopWidth: 1,
+    borderTopColor: "#F1F5F9",
+    paddingTop: 16,
+    alignItems: "center",
+    marginTop: 16,
+  },
+  taskProgress: {
+    flex: 1,
+    marginRight: 16,
+  },
+  progressBar: {
+    height: 6,
+    backgroundColor: "#F1F5F9",
+    borderRadius: 3,
+    overflow: "hidden",
+    marginBottom: 8,
+  },
+  progressFill: {
+    height: "100%",
+    backgroundColor: "#1B2560",
+    borderRadius: 3,
+  },
+  progressText: {
+    fontSize: 12,
+    color: "#64748B",
+    fontWeight: "500",
+  },
+  tapHint: {
+    fontSize: 13,
+    color: "#1B2560",
+    fontStyle: "italic",
+    fontWeight: "500",
+  },
+  viewAllButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 16,
+    marginTop: 16,
+    borderWidth: 2,
+    borderColor: "#1B2560",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  viewAllText: {
+    fontSize: 15,
+    color: "#1B2560",
+    fontWeight: "600",
+    marginRight: 8,
+  },
+  // Full Screen Map Styles with Updated Colors
   fullScreenContainer: {
     flex: 1,
-    backgroundColor: "#1E3A8A",
+    backgroundColor: "#1B2560",
   },
   fullScreenSafeArea: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#F8FAFC",
   },
   fullScreenHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 20,
   },
   backButton: {
     padding: 8,
   },
   fullScreenTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#FFFFFF",
   },
@@ -1349,7 +1633,7 @@ const styles = StyleSheet.create({
   fullScreenMapContainer: {
     flex: 1,
     backgroundColor: "#F3F4F6",
-    marginTop: -15, // Overlap with curve
+    marginTop: -20,
   },
   fullScreenMapPlaceholder: {
     flex: 1,
@@ -1367,13 +1651,13 @@ const styles = StyleSheet.create({
     marginTop: 24,
     paddingHorizontal: 20,
     paddingVertical: 12,
-    backgroundColor: "rgba(59, 130, 246, 0.1)",
+    backgroundColor: "rgba(255, 77, 77, 0.1)",
     borderRadius: 8,
     alignItems: "center",
   },
   fullScreenCoordinateText: {
     fontSize: 14,
-    color: "#3B82F6",
+    color: "#FF4D4D",
     fontFamily: "monospace",
     marginBottom: 8,
   },
@@ -1390,211 +1674,62 @@ const styles = StyleSheet.create({
   },
   trackingText: {
     fontSize: 12,
-    color: "#3B82F6",
+    color: "#1B2560",
     fontWeight: "500",
   },
-  taskCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 8,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    marginBottom: 16,
-    marginTop: 16, // Add this line for spacing from section title
-  },
-  taskHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  urgentBadge: {
-    backgroundColor: "#EF4444",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginRight: 8,
-  },
-  urgentText: {
-    color: "#FFFFFF",
-    fontSize: 10,
-    fontWeight: "600",
-  },
-  taskType: {
-    color: "#6B7280",
-    fontSize: 12,
-    flex: 1,
-  },
-  statusBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(59, 130, 246, 0.1)",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  statusText: {
-    color: "#3B82F6",
-    fontSize: 10,
-    fontWeight: "500",
-    marginLeft: 4,
-  },
-  taskTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111827",
-    marginBottom: 12, // Increased from 8 to 12
-  },
-  taskDescription: {
-    fontSize: 14,
-    color: "#6B7280",
-    lineHeight: 20,
-    marginBottom: 20, // Increased from 16 to 20
-  },
-  taskFooter: {
-    borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
-    paddingTop: 16, // Increased from 12 to 16
-    marginBottom: 12, // Added margin bottom
-  },
-  taskLocation: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  taskLocationText: {
-    color: "#6B7280",
-    fontSize: 12,
-    marginLeft: 4,
-  },
-  taskMeta: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  taskTime: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  taskTimeText: {
-    color: "#6B7280",
-    fontSize: 12,
-    marginLeft: 4,
-  },
-  taskAssigned: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  taskAssignedText: {
-    color: "#6B7280",
-    fontSize: 12,
-    marginLeft: 4,
-  },
-  taskDueDate: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  taskDueDateText: {
-    color: "#6B7280",
-    fontSize: 12,
-    marginLeft: 4,
-  },
-  tapHintContainer: {
-    borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
-    paddingTop: 12, // Increased from 8 to 12
-    marginTop: 12, // Increased from 8 to 12
-    alignItems: "center",
-  },
-  tapHint: {
-    fontSize: 12,
-    color: "#3B82F6",
-    fontStyle: "italic",
-  },
-  viewAllButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 8,
-    padding: 12,
-    marginTop: 12,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  viewAllText: {
-    fontSize: 14,
-    color: "#3B82F6",
-    fontWeight: "500",
-    marginRight: 4,
-  },
-  // Notification Modal Styles
+  // Notification Modal Styles with Updated Colors
   notificationModalHeaderContainer: {
     position: "relative",
     zIndex: 10,
   },
   notificationModalHeaderGradient: {
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0,
-    paddingBottom: 30,
+    paddingBottom: 35,
   },
   notificationModalHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 20,
   },
   notificationModalCurvedBottom: {
-    height: 30,
-    backgroundColor: "#F9FAFB",
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    marginTop: -30,
+    height: 35,
+    backgroundColor: "#F8FAFC",
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
+    marginTop: -35,
     zIndex: 5,
   },
-  // Updated Section Header Container for Notifications Modal
   sectionHeaderContainer: {
     backgroundColor: "#FFFFFF",
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
-    marginTop: -15, // Overlap with curve
+    borderBottomColor: "#E2E8F0",
+    marginTop: -20,
   },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    minHeight: 32,
-    gap: 48,
-  },
-  // Updated Mark All Button to match tasks screen style
   markAllButton: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#3B82F6",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    gap: 6,
+    borderWidth: 2,
+    borderColor: "#1B2560",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 12,
+    gap: 8,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-    minWidth: 120,
-    marginLeft: 16,
+    shadowRadius: 4,
+    elevation: 2,
   },
   markAllButtonText: {
-    color: "#3B82F6",
+    color: "#1B2560",
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   notificationModalContent: {
     flex: 1,
@@ -1603,258 +1738,293 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   notificationScrollContent: {
-    paddingHorizontal: 20,
-    paddingTop: 12, // Reduced from 25 to match tasks screen
-    paddingBottom: 20,
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    paddingBottom: 30,
   },
-  // Notification Card Styles
+  // Enhanced Notification Card Styles
   notificationCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 16,
+    padding: 20,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: "#E2E8F0",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
   unreadCard: {
     borderLeftWidth: 4,
-    borderLeftColor: "#3B82F6",
-    backgroundColor: "#F8FAFC",
+    borderLeftColor: "#FF4D4D",
+    backgroundColor: "#FEFEFE",
   },
   notificationHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: 12,
+    marginBottom: 16,
     position: "relative",
   },
   notificationLeft: {
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
-    marginRight: 8,
+    marginRight: 12,
+    flexWrap: "wrap",
+    gap: 8,
   },
   statusIndicator: {
     width: 12,
     height: 12,
     borderRadius: 6,
-    marginRight: 12,
+    marginRight: 8,
   },
   typeBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginRight: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 6,
   },
   typeText: {
     color: "#FFFFFF",
-    fontSize: 10,
-    fontWeight: "600",
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
   categoryBadge: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F3F4F6",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginRight: 8,
+    backgroundColor: "#F8FAFC",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
   },
   categoryText: {
-    color: "#6B7280",
+    color: "#64748B",
     fontSize: 12,
     marginLeft: 4,
+    fontWeight: "500",
   },
   taskId: {
-    color: "#3B82F6",
+    color: "#1B2560",
     fontSize: 12,
-    fontWeight: "500",
+    fontWeight: "600",
     flexShrink: 1,
   },
   notificationTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111827",
-    marginBottom: 12,
-    lineHeight: 22,
+    fontSize: 17,
+    fontWeight: "700",
+    color: "#1E293B",
+    marginBottom: 16,
+    lineHeight: 24,
   },
   notificationDetails: {
-    marginBottom: 12,
+    marginBottom: 16,
   },
   detailText: {
     fontSize: 14,
-    color: "#6B7280",
-    marginBottom: 4,
+    color: "#64748B",
+    marginBottom: 6,
+    fontWeight: "500",
   },
   assignedSection: {
     flexDirection: "row",
-    marginBottom: 12,
+    marginBottom: 16,
   },
   assignedLabel: {
     fontSize: 14,
-    color: "#6B7280",
+    color: "#64748B",
+    fontWeight: "500",
   },
   assignedValue: {
     fontSize: 14,
-    color: "#3B82F6",
-    fontWeight: "500",
+    color: "#1B2560",
+    fontWeight: "600",
   },
   notificationFooter: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
-    paddingTop: 12,
+    borderTopColor: "#F1F5F9",
+    paddingTop: 16,
   },
   timeText: {
-    fontSize: 12,
-    color: "#6B7280",
+    fontSize: 13,
+    color: "#64748B",
+    fontWeight: "500",
   },
   dropdownMenu: {
     position: "absolute",
-    top: 30,
+    top: 35,
     right: 0,
     backgroundColor: "#FFFFFF",
-    borderRadius: 8,
+    borderRadius: 12,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
     zIndex: 1000,
-    minWidth: 120,
+    minWidth: 140,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: "#E2E8F0",
   },
   dropdownItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
+    borderBottomColor: "#F8FAFC",
   },
   dropdownText: {
     fontSize: 14,
     color: "#374151",
-    marginLeft: 8,
+    marginLeft: 10,
+    fontWeight: "500",
   },
-  // Empty State
+  // Enhanced Empty State
   emptyState: {
     alignItems: "center",
-    paddingVertical: 60,
+    paddingVertical: 80,
   },
   emptyStateTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#6B7280",
-    marginTop: 16,
-    marginBottom: 8,
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#64748B",
+    marginTop: 20,
+    marginBottom: 12,
   },
   emptyStateText: {
-    fontSize: 14,
-    color: "#9CA3AF",
+    fontSize: 15,
+    color: "#94A3B8",
     textAlign: "center",
+    fontWeight: "500",
   },
-  // Modal Styles
+  // Enhanced Modal Styles
   modalContainer: {
     flex: 1,
-    backgroundColor: "#1E3A8A",
+    backgroundColor: "#1B2560",
   },
   modalSafeArea: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#F8FAFC",
   },
   modalHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 20,
   },
   modalHeaderTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#FFFFFF",
   },
   modalContent: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingHorizontal: 24,
+    paddingTop: 24,
   },
-  // Archive Button
+  // Enhanced Archive/Restore Buttons
   archiveButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#6B7280",
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    marginBottom: 20,
-    gap: 8,
+    backgroundColor: "#64748B",
+    paddingVertical: 18,
+    paddingHorizontal: 28,
+    borderRadius: 16,
+    marginBottom: 24,
+    gap: 10,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   archiveButtonText: {
     color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "700",
   },
-  // Main Info Card
+  restoreButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#10B981",
+    paddingVertical: 18,
+    paddingHorizontal: 28,
+    borderRadius: 16,
+    marginBottom: 24,
+    gap: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  restoreButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  // Enhanced Main Info Card
   mainInfoCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 20,
+    borderRadius: 16,
+    padding: 24,
+    marginBottom: 24,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
   },
   badgeRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginBottom: 16,
-    gap: 8,
+    marginBottom: 20,
+    gap: 10,
   },
   priorityBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 8,
   },
   priorityText: {
     color: "#FFFFFF",
     fontSize: 12,
-    fontWeight: "600",
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
   categoryBadgeDetail: {
-    backgroundColor: "#F3F4F6",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
+    backgroundColor: "#F8FAFC",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
   },
   categoryTextDetail: {
-    color: "#6B7280",
+    color: "#64748B",
     fontSize: 12,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   detailTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
-    color: "#111827",
-    lineHeight: 28,
-    marginBottom: 12,
+    color: "#1E293B",
+    lineHeight: 30,
+    marginBottom: 16,
   },
   readStatusRow: {
     flexDirection: "row",
@@ -1864,114 +2034,111 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    marginRight: 8,
+    marginRight: 10,
   },
   readStatusText: {
     fontSize: 14,
-    color: "#6B7280",
-    fontWeight: "500",
+    color: "#64748B",
+    fontWeight: "600",
   },
   quickInfoGrid: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
   },
   quickInfoItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 12,
+    paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
+    borderBottomColor: "#F8FAFC",
   },
   quickInfoContent: {
-    marginLeft: 12,
+    marginLeft: 16,
     flex: 1,
   },
   quickInfoLabel: {
-    fontSize: 12,
-    color: "#6B7280",
-    marginBottom: 2,
+    fontSize: 13,
+    color: "#64748B",
+    marginBottom: 4,
+    fontWeight: "500",
   },
   quickInfoValue: {
-    fontSize: 14,
-    color: "#111827",
-    fontWeight: "500",
+    fontSize: 15,
+    color: "#1E293B",
+    fontWeight: "600",
   },
   sectionCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111827",
-    marginLeft: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
   },
   descriptionText: {
-    fontSize: 14,
-    color: "#6B7280",
-    lineHeight: 22,
+    fontSize: 15,
+    color: "#64748B",
+    lineHeight: 24,
+    fontWeight: "500",
   },
   detailRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
+    borderBottomColor: "#F8FAFC",
   },
   detailLabel: {
     fontSize: 14,
-    color: "#6B7280",
+    color: "#64748B",
+    fontWeight: "500",
   },
   detailValue: {
     fontSize: 14,
-    color: "#111827",
-    fontWeight: "500",
+    color: "#1E293B",
+    fontWeight: "600",
   },
   instructionsList: {
-    gap: 12,
+    gap: 16,
   },
   instructionItem: {
     flexDirection: "row",
     alignItems: "flex-start",
   },
   instructionNumber: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: "#3B82F6",
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#1B2560",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 12,
+    marginRight: 16,
   },
   instructionNumberText: {
     color: "#FFFFFF",
-    fontSize: 12,
-    fontWeight: "600",
+    fontSize: 13,
+    fontWeight: "700",
   },
   instructionText: {
-    fontSize: 14,
+    fontSize: 15,
     color: "#374151",
     flex: 1,
-    lineHeight: 20,
+    lineHeight: 22,
+    fontWeight: "500",
   },
   resourceGrid: {
     flexDirection: "row",
@@ -1981,19 +2148,21 @@ const styles = StyleSheet.create({
   resourceItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#EBF8FF",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    gap: 6,
+    backgroundColor: "rgba(27, 37, 96, 0.1)",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    gap: 8,
+    borderWidth: 1,
+    borderColor: "rgba(27, 37, 96, 0.2)",
   },
   resourceText: {
-    fontSize: 12,
-    color: "#1E40AF",
-    fontWeight: "500",
+    fontSize: 13,
+    color: "#1B2560",
+    fontWeight: "600",
   },
   modalScrollContent: {
-    paddingBottom: 40,
+    paddingBottom: 50,
     flexGrow: 1,
   },
   fullScreenHeaderContainer: {
@@ -2001,62 +2170,41 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   fullScreenHeaderGradient: {
-    paddingBottom: 30,
+    paddingBottom: 35,
   },
   fullScreenCurvedBottom: {
-    height: 30,
+    height: 35,
     backgroundColor: "#F3F4F6",
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    marginTop: -30,
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
+    marginTop: -35,
     zIndex: 5,
   },
   tabContainer: {
     flexDirection: "row",
     backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
+    borderBottomColor: "#E2E8F0",
   },
   tab: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 12,
-    gap: 8,
+    paddingVertical: 18,
+    paddingHorizontal: 16,
+    gap: 10,
   },
   activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#3B82F6",
+    borderBottomWidth: 3,
+    borderBottomColor: "#1B2560",
   },
   tabText: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#6B7280",
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#64748B",
   },
   activeTabText: {
-    color: "#3B82F6",
-  },
-  restoreButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#10B981",
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    marginBottom: 20,
-    gap: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  restoreButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
+    color: "#1B2560",
   },
 })

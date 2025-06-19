@@ -126,7 +126,7 @@ export default function PrivacySecurityScreen() {
     selectedQuestion: string,
     onSelect: (question: string) => void,
     isVisible: boolean,
-    onClose: () => void
+    onClose: () => void,
   ) => {
     if (!isVisible) return null
 
@@ -146,24 +146,16 @@ export default function PrivacySecurityScreen() {
             showsVerticalScrollIndicator={true}
             renderItem={({ item }) => (
               <TouchableOpacity
-                style={[
-                  styles.dropdownItem,
-                  selectedQuestion === item && styles.dropdownItemSelected
-                ]}
+                style={[styles.dropdownItem, selectedQuestion === item && styles.dropdownItemSelected]}
                 onPress={() => {
                   onSelect(item)
                   onClose()
                 }}
               >
-                <Text style={[
-                  styles.dropdownItemText,
-                  selectedQuestion === item && styles.dropdownItemTextSelected
-                ]}>
+                <Text style={[styles.dropdownItemText, selectedQuestion === item && styles.dropdownItemTextSelected]}>
                   {item}
                 </Text>
-                {selectedQuestion === item && (
-                  <Ionicons name="checkmark" size={20} color="#1E3A8A" />
-                )}
+                {selectedQuestion === item && <Ionicons name="checkmark" size={20} color="#1B2560" />}
               </TouchableOpacity>
             )}
           />
@@ -175,10 +167,10 @@ export default function PrivacySecurityScreen() {
   const renderChangePasswordModal = () => (
     <Modal animationType="slide" transparent={false} visible={changePasswordModal}>
       <View style={styles.modalContainer}>
-        <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+        <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
         <SafeAreaView style={styles.modalSafeArea}>
           <LinearGradient
-            colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+            colors={["#1B2560", "#FF4D4D"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.modalHeader}
@@ -240,10 +232,10 @@ export default function PrivacySecurityScreen() {
   const renderSecurityQuestionsModal = () => (
     <Modal animationType="slide" transparent={false} visible={securityQuestionsModal}>
       <View style={styles.modalContainer}>
-        <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+        <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
         <SafeAreaView style={styles.modalSafeArea}>
           <LinearGradient
-            colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+            colors={["#1B2560", "#FF4D4D"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.modalHeader}
@@ -262,14 +254,8 @@ export default function PrivacySecurityScreen() {
               </Text>
 
               <Text style={styles.formLabel}>Security Question 1</Text>
-              <TouchableOpacity
-                style={styles.dropdownSelector}
-                onPress={() => setShowDropdown1(true)}
-              >
-                <Text style={[
-                  styles.dropdownSelectorText,
-                  !securityQuestion1 && styles.dropdownPlaceholder
-                ]}>
+              <TouchableOpacity style={styles.dropdownSelector} onPress={() => setShowDropdown1(true)}>
+                <Text style={[styles.dropdownSelectorText, !securityQuestion1 && styles.dropdownPlaceholder]}>
                   {securityQuestion1 || "Select a security question"}
                 </Text>
                 <Ionicons name="chevron-down" size={20} color="#6B7280" />
@@ -285,14 +271,8 @@ export default function PrivacySecurityScreen() {
               />
 
               <Text style={styles.formLabel}>Security Question 2</Text>
-              <TouchableOpacity
-                style={styles.dropdownSelector}
-                onPress={() => setShowDropdown2(true)}
-              >
-                <Text style={[
-                  styles.dropdownSelectorText,
-                  !securityQuestion2 && styles.dropdownPlaceholder
-                ]}>
+              <TouchableOpacity style={styles.dropdownSelector} onPress={() => setShowDropdown2(true)}>
+                <Text style={[styles.dropdownSelectorText, !securityQuestion2 && styles.dropdownPlaceholder]}>
                   {securityQuestion2 || "Select a security question"}
                 </Text>
                 <Ionicons name="chevron-down" size={20} color="#6B7280" />
@@ -321,11 +301,11 @@ export default function PrivacySecurityScreen() {
             onRequestClose={() => setShowDropdown1(false)}
           >
             {renderDropdown(
-              securityQuestions.filter(q => q !== securityQuestion2),
+              securityQuestions.filter((q) => q !== securityQuestion2),
               securityQuestion1,
               setSecurityQuestion1,
               showDropdown1,
-              () => setShowDropdown1(false)
+              () => setShowDropdown1(false),
             )}
           </Modal>
 
@@ -336,11 +316,11 @@ export default function PrivacySecurityScreen() {
             onRequestClose={() => setShowDropdown2(false)}
           >
             {renderDropdown(
-              securityQuestions.filter(q => q !== securityQuestion1),
+              securityQuestions.filter((q) => q !== securityQuestion1),
               securityQuestion2,
               setSecurityQuestion2,
               showDropdown2,
-              () => setShowDropdown2(false)
+              () => setShowDropdown2(false),
             )}
           </Modal>
         </SafeAreaView>
@@ -351,10 +331,10 @@ export default function PrivacySecurityScreen() {
   const renderPrivacyPolicyModal = () => (
     <Modal animationType="slide" transparent={false} visible={privacyPolicyModal}>
       <View style={styles.modalContainer}>
-        <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+        <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
         <SafeAreaView style={styles.modalSafeArea}>
           <LinearGradient
-            colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+            colors={["#1B2560", "#FF4D4D"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.modalHeader}
@@ -411,10 +391,10 @@ export default function PrivacySecurityScreen() {
   const renderTermsModal = () => (
     <Modal animationType="slide" transparent={false} visible={termsModal}>
       <View style={styles.modalContainer}>
-        <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+        <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
         <SafeAreaView style={styles.modalSafeArea}>
           <LinearGradient
-            colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+            colors={["#1B2560", "#FF4D4D"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.modalHeader}
@@ -469,12 +449,12 @@ export default function PrivacySecurityScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" translucent={false} hidden={false} />
+      <StatusBar barStyle="light-content" backgroundColor="#1B2560" translucent={false} hidden={false} />
 
       {/* Updated Header with curved bottom (matching personal information screen) */}
       <View style={styles.headerContainer}>
         <LinearGradient
-          colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+          colors={["#1B2560", "#FF4D4D"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.headerGradient}
@@ -500,7 +480,7 @@ export default function PrivacySecurityScreen() {
 
           <TouchableOpacity style={styles.menuItem} onPress={() => setChangePasswordModal(true)}>
             <View style={styles.menuItemLeft}>
-              <Ionicons name="lock-closed-outline" size={24} color="#1E3A8A" />
+              <Ionicons name="lock-closed-outline" size={24} color="#1B2560" />
               <Text style={styles.menuText}>Change Password</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
@@ -508,7 +488,7 @@ export default function PrivacySecurityScreen() {
 
           <TouchableOpacity style={styles.menuItem} onPress={() => setSecurityQuestionsModal(true)}>
             <View style={styles.menuItemLeft}>
-              <Ionicons name="shield-checkmark-outline" size={24} color="#1E3A8A" />
+              <Ionicons name="shield-checkmark-outline" size={24} color="#1B2560" />
               <Text style={styles.menuText}>Security Questions</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
@@ -516,12 +496,12 @@ export default function PrivacySecurityScreen() {
 
           <View style={styles.toggleItem}>
             <View style={styles.toggleItemLeft}>
-              <Ionicons name="shield-outline" size={24} color="#1E3A8A" />
+              <Ionicons name="shield-outline" size={24} color="#1B2560" />
               <Text style={styles.toggleText}>Two-Factor Authentication</Text>
             </View>
             <Switch
               trackColor={{ false: "#D1D5DB", true: "#93C5FD" }}
-              thumbColor={twoFactorEnabled ? "#1E3A8A" : "#F3F4F6"}
+              thumbColor={twoFactorEnabled ? "#1B2560" : "#F3F4F6"}
               onValueChange={() => setTwoFactorEnabled(!twoFactorEnabled)}
               value={twoFactorEnabled}
             />
@@ -533,12 +513,12 @@ export default function PrivacySecurityScreen() {
 
           <View style={styles.toggleItem}>
             <View style={styles.toggleItemLeft}>
-              <Ionicons name="notifications-outline" size={24} color="#1E3A8A" />
+              <Ionicons name="notifications-outline" size={24} color="#1B2560" />
               <Text style={styles.toggleText}>Push Notifications</Text>
             </View>
             <Switch
               trackColor={{ false: "#D1D5DB", true: "#93C5FD" }}
-              thumbColor={notificationsEnabled ? "#1E3A8A" : "#F3F4F6"}
+              thumbColor={notificationsEnabled ? "#1B2560" : "#F3F4F6"}
               onValueChange={() => setNotificationsEnabled(!notificationsEnabled)}
               value={notificationsEnabled}
             />
@@ -546,7 +526,7 @@ export default function PrivacySecurityScreen() {
 
           <TouchableOpacity style={styles.menuItem} onPress={() => setPrivacyPolicyModal(true)}>
             <View style={styles.menuItemLeft}>
-              <Ionicons name="eye-off-outline" size={24} color="#1E3A8A" />
+              <Ionicons name="eye-off-outline" size={24} color="#1B2560" />
               <Text style={styles.menuText}>Privacy Policy</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
@@ -554,7 +534,7 @@ export default function PrivacySecurityScreen() {
 
           <TouchableOpacity style={styles.menuItem} onPress={() => setTermsModal(true)}>
             <View style={styles.menuItemLeft}>
-              <Ionicons name="document-text-outline" size={24} color="#1E3A8A" />
+              <Ionicons name="document-text-outline" size={24} color="#1B2560" />
               <Text style={styles.menuText}>Terms of Service</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
@@ -630,7 +610,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1E3A8A",
+    color: "#1B2560",
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#E5E7EB",
@@ -675,7 +655,7 @@ const styles = StyleSheet.create({
   // Modal Styles
   modalContainer: {
     flex: 1,
-    backgroundColor: "#1E3A8A",
+    backgroundColor: "#1B2560",
   },
   modalSafeArea: {
     flex: 1,
@@ -753,7 +733,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   submitButton: {
-    backgroundColor: "#1E3A8A",
+    backgroundColor: "#1B2560",
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: "center",
@@ -836,7 +816,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   dropdownItemTextSelected: {
-    color: "#1E3A8A",
+    color: "#1B2560",
     fontWeight: "500",
   },
   // Document Styles
@@ -865,7 +845,7 @@ const styles = StyleSheet.create({
   documentSubtitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1E3A8A",
+    color: "#1B2560",
     marginTop: 20,
     marginBottom: 12,
   },

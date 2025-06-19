@@ -313,12 +313,12 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" translucent={false} hidden={false} />
+      <StatusBar barStyle="light-content" backgroundColor="#1B2560" translucent={false} hidden={false} />
 
       {/* Header with curved bottom */}
       <View style={styles.headerContainer}>
         <LinearGradient
-          colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+          colors={["#1B2560", "#FF4D4D"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.headerGradient}
@@ -410,11 +410,11 @@ export default function ProfileScreen() {
         visible={notificationsVisible}
         onRequestClose={() => setNotificationsVisible(false)}
       >
-        <View style={styles.modalContainer}>
-          <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+        <View style={[styles.modalContainer, { backgroundColor: "#1B2560" }]}>
+          <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
           <SafeAreaView style={styles.modalSafeArea}>
             <LinearGradient
-              colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+              colors={["#1B2560", "#FF4D4D"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.modalHeader}
@@ -505,11 +505,11 @@ export default function ProfileScreen() {
           visible={notificationDetailVisible}
           onRequestClose={() => setNotificationDetailVisible(false)}
         >
-          <View style={styles.modalContainer}>
-            <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
+          <View style={[styles.modalContainer, { backgroundColor: "#1B2560" }]}>
+            <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
             <SafeAreaView style={styles.modalSafeArea}>
               <LinearGradient
-                colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
+                colors={["#1B2560", "#FF4D4D"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.modalHeader}
