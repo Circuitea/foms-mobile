@@ -1,14 +1,17 @@
 "use client"
 
+import { api } from "@/lib/api"
 import { Ionicons } from "@expo/vector-icons"
 import { useFocusEffect } from "@react-navigation/native"
 import { LinearGradient } from "expo-linear-gradient"
 import {
+  Accuracy,
   type LocationObject,
   type LocationSubscription,
   requestForegroundPermissionsAsync,
   watchPositionAsync,
 } from "expo-location"
+import { scheduleNotificationAsync } from "expo-notifications"
 import { useRouter } from "expo-router"
 import { useCallback, useEffect, useRef, useState } from "react"
 import {
@@ -198,6 +201,21 @@ export default function HomeScreen() {
   )
 
   useEffect(() => {
+    async function sendLocationToServer(currentLocation: LocationObject) {
+      try {
+        await api.fetchWithAuth('/api/location', {
+          method: 'POST',
+          body: JSON.stringify({
+            latitude: currentLocation.coords.latitude,
+            longitude: currentLocation.coords.longitude,
+            timestamp: new Date().toISOString(),
+          }),
+        });
+      } catch (error) {
+        console.error('Location update failed:', error);
+      }
+    };
+
     async function getCurrentLocation() {
       const { status } = await requestForegroundPermissionsAsync()
       if (status !== "granted") {
@@ -208,8 +226,9 @@ export default function HomeScreen() {
       setIsTracking(true)
       return watchPositionAsync(
         {
-          timeInterval: 5000,
-          distanceInterval: 10,
+          accuracy: Accuracy.Highest,
+          timeInterval: 1000,
+          distanceInterval: 1,
         },
         (fetchedLocation) => {
           setLocation(fetchedLocation)
@@ -221,7 +240,15 @@ export default function HomeScreen() {
     let watch: LocationSubscription | undefined
     getCurrentLocation().then((locationSubscription) => {
       watch = locationSubscription
-    })
+    });
+
+    scheduleNotificationAsync({
+      content: {
+        title: 'Test',
+        body: 'Test Notification',
+      },
+      trigger: null,
+    });
 
     return () => {
       if (watch) {
@@ -230,26 +257,6 @@ export default function HomeScreen() {
       setIsTracking(false)
     }
   }, [])
-
-  const sendLocationToServer = async (currentLocation: LocationObject) => {
-    try {
-      const response = await fetch("http://192.168.45.5/location", {
-        headers: { "Content-Type": "application/json" },
-        method: "POST",
-        body: JSON.stringify({
-          latitude: currentLocation.coords.latitude,
-          longitude: currentLocation.coords.longitude,
-          timestamp: new Date().toISOString(),
-        }),
-      })
-
-      if (!response.ok) {
-        console.log(`Error: ${response.status}`)
-      }
-    } catch (error) {
-      console.log("Network error:", error)
-    }
-  }
 
   const getUnreadNotificationsCount = () => {
     return notifications.filter((n) => !n.isRead).length
