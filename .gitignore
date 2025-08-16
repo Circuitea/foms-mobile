@@ -37,3 +37,12 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+# Google Service Account Key
+firebase-adminsdk.json
+
+# Google Services Config
+google-services.json
+
+# Android Files
+android/
