@@ -126,7 +126,7 @@ export default function ProfileScreen() {
   const confirmSignOut = async () => {
     const response = await api.delete('/logout');
 
-    router.replace('/(auth)');
+    router.replace('/');
   }
 
   const handleSignOut = () => {
