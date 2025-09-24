@@ -7,6 +7,6 @@ export default ({ config }) => ({
   },
   extra: {
     ...config.extra,
-    apiBaseURL: process.env.API_URL ?? 'http://localhost:3000',
+    apiBaseURL: process.env.API_URL ?? 'http://localhost:3000/api',
   }
 });
