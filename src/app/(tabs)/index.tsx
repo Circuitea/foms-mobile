@@ -1,19 +1,13 @@
 "use client"
 
-import { api } from "@/lib/api"
 import { Ionicons } from "@expo/vector-icons"
 import { useFocusEffect } from "@react-navigation/native"
 import { LinearGradient } from "expo-linear-gradient"
 import {
-  Accuracy,
-  type LocationObject,
-  type LocationSubscription,
-  requestForegroundPermissionsAsync,
-  watchPositionAsync,
+  type LocationObject
 } from "expo-location"
-import { scheduleNotificationAsync } from "expo-notifications"
 import { useRouter } from "expo-router"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import {
   Alert,
   Modal,
@@ -200,63 +194,63 @@ export default function HomeScreen() {
     }, []),
   )
 
-  useEffect(() => {
-    async function sendLocationToServer(currentLocation: LocationObject) {
-      try {
-        await api.fetchWithAuth('/api/location', {
-          method: 'POST',
-          body: JSON.stringify({
-            latitude: currentLocation.coords.latitude,
-            longitude: currentLocation.coords.longitude,
-            timestamp: new Date().toISOString(),
-          }),
-        });
-      } catch (error) {
-        console.error('Location update failed:', error);
-      }
-    };
+  // useEffect(() => {
+  //   async function sendLocationToServer(currentLocation: LocationObject) {
+  //     try {
+  //       await api.fetchWithAuth('/api/location', {
+  //         method: 'POST',
+  //         body: JSON.stringify({
+  //           latitude: currentLocation.coords.latitude,
+  //           longitude: currentLocation.coords.longitude,
+  //           timestamp: new Date().toISOString(),
+  //         }),
+  //       });
+  //     } catch (error) {
+  //       console.error('Location update failed:', error);
+  //     }
+  //   };
 
-    async function getCurrentLocation() {
-      const { status } = await requestForegroundPermissionsAsync()
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied")
-        return
-      }
+  //   async function getCurrentLocation() {
+  //     const { status } = await requestForegroundPermissionsAsync()
+  //     if (status !== "granted") {
+  //       setErrorMsg("Permission to access location was denied")
+  //       return
+  //     }
 
-      setIsTracking(true)
-      return watchPositionAsync(
-        {
-          accuracy: Accuracy.Highest,
-          timeInterval: 1000,
-          distanceInterval: 1,
-        },
-        (fetchedLocation) => {
-          setLocation(fetchedLocation)
-          sendLocationToServer(fetchedLocation)
-        },
-      )
-    }
+  //     setIsTracking(true)
+  //     return watchPositionAsync(
+  //       {
+  //         accuracy: Accuracy.Highest,
+  //         timeInterval: 5000,
+  //         distanceInterval: 1,
+  //       },
+  //       (fetchedLocation) => {
+  //         setLocation(fetchedLocation)
+  //         sendLocationToServer(fetchedLocation)
+  //       },
+  //     )
+  //   }
 
-    let watch: LocationSubscription | undefined
-    getCurrentLocation().then((locationSubscription) => {
-      watch = locationSubscription
-    });
+  //   let watch: LocationSubscription | undefined
+  //   getCurrentLocation().then((locationSubscription) => {
+  //     watch = locationSubscription
+  //   });
 
-    scheduleNotificationAsync({
-      content: {
-        title: 'Test',
-        body: 'Test Notification',
-      },
-      trigger: null,
-    });
+  //   scheduleNotificationAsync({
+  //     content: {
+  //       title: 'Test',
+  //       body: 'Test Notification',
+  //     },
+  //     trigger: null,
+  //   });
 
-    return () => {
-      if (watch) {
-        watch.remove()
-      }
-      setIsTracking(false)
-    }
-  }, [])
+  //   return () => {
+  //     if (watch) {
+  //       watch.remove()
+  //     }
+  //     setIsTracking(false)
+  //   }
+  // }, [])
 
   const getUnreadNotificationsCount = () => {
     return notifications.filter((n) => !n.isRead).length
@@ -423,55 +417,6 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1B2560" translucent={false} hidden={false} />
-
-      {/* Updated Header with New Gradient Colors */}
-      <View style={styles.headerContainer}>
-        <LinearGradient
-          colors={["#1B2560", "#FF4D4D"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.headerGradient}
-        >
-          <SafeAreaView style={styles.headerSafeArea}>
-            <View style={styles.headerContent}>
-              <View style={styles.headerLeft}>
-                <View style={styles.logoContainer}>
-                  <View style={styles.logoCircle}>
-                    <Ionicons name="shield" size={28} color="#FFFFFF" />
-                  </View>
-                  <View style={styles.logoTextContainer}>
-                    <Text style={styles.logoText}>CDRRMO</Text>
-                    <Text style={styles.logoSubtext}>Emergency Response</Text>
-                  </View>
-                </View>
-              </View>
-              <View style={styles.headerRight}>
-                {/* Enhanced Notification Bell Button */}
-                <TouchableOpacity style={styles.notificationButton} onPress={() => setNotificationsVisible(true)}>
-                  <View style={styles.notificationIconContainer}>
-                    <Ionicons name="notifications" size={24} color="#FFFFFF" />
-                    {getUnreadNotificationsCount() > 0 && (
-                      <View style={styles.notificationBadge}>
-                        <Text style={styles.notificationBadgeText}>
-                          {getUnreadNotificationsCount() > 99 ? "99+" : getUnreadNotificationsCount()}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.profileButton}>
-                  <View style={styles.profileCircle}>
-                    <Ionicons name="person" size={22} color="#FFFFFF" />
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </SafeAreaView>
-        </LinearGradient>
-
-        {/* Enhanced curved bottom part */}
-        <View style={styles.curvedBottom} />
-      </View>
 
       {/* Content with improved spacing */}
       <View style={styles.contentWrapper}>

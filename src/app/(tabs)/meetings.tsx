@@ -418,51 +418,6 @@ export default function MeetingsScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" translucent={false} hidden={false} />
 
-      {/* Updated Header with curved bottom */}
-      <View style={styles.headerContainer}>
-        <LinearGradient
-          colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.headerGradient}
-        >
-          <SafeAreaView style={styles.headerSafeArea}>
-            <View style={styles.headerContent}>
-              <View style={styles.headerLeft}>
-                <View style={styles.logoContainer}>
-                  <View style={styles.logoCircle}>
-                    <Ionicons name="shield" size={24} color="#FFFFFF" />
-                  </View>
-                  <Text style={styles.logoText}>CDRRMO</Text>
-                </View>
-              </View>
-              <View style={styles.headerRight}>
-                <TouchableOpacity style={styles.notificationButton} onPress={() => setNotificationsVisible(true)}>
-                  <View style={styles.notificationIconContainer}>
-                    <Ionicons name="notifications" size={20} color="#FFFFFF" />
-                    {getUnreadNotificationsCount() > 0 && (
-                      <View style={styles.notificationBadge}>
-                        <Text style={styles.notificationBadgeText}>
-                          {getUnreadNotificationsCount() > 99 ? "99+" : getUnreadNotificationsCount()}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.profileButton}>
-                  <View style={styles.profileCircle}>
-                    <Ionicons name="person" size={20} color="#FFFFFF" />
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </SafeAreaView>
-        </LinearGradient>
-
-        {/* This is the curved bottom part */}
-        <View style={styles.curvedBottom} />
-      </View>
-
       <View style={styles.content}>
         <View style={styles.titleContainer}>
           <View style={styles.titleWithIcon}>

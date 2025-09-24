@@ -549,203 +549,7 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
 
     return (
       <Modal animationType="slide" transparent={false} visible={detailModalVisible} onRequestClose={handleCloseDetail}>
-        <View style={styles.modalContainer}>
-          <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
-          <SafeAreaView style={styles.modalSafeArea}>
-            <LinearGradient
-              colors={["#1B2560", "#FF4D4D"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.modalHeader}
-            >
-              <TouchableOpacity style={styles.backButton} onPress={handleCloseDetail}>
-                <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-              </TouchableOpacity>
-              <Text style={styles.modalHeaderTitle}>Task Details</Text>
-              <View style={styles.headerSpacer} />
-            </LinearGradient>
-
-            <ScrollView
-              style={styles.modalContent}
-              contentContainerStyle={styles.modalScrollContent}
-              showsVerticalScrollIndicator={false}
-            >
-              {/* Main Info Card */}
-              <View style={styles.mainInfoCard}>
-                <View style={styles.badgeRow}>
-                  <View
-                    style={[
-                      styles.priorityBadge,
-                      {
-                        backgroundColor:
-                          selectedTask.type === "URGENT"
-                            ? "#FF4D4D"
-                            : selectedTask.type === "HIGH"
-                              ? "#F59E0B"
-                              : "#1B2560",
-                      },
-                    ]}
-                  >
-                    <Text style={styles.priorityText}>{selectedTask.type}</Text>
-                  </View>
-                  <View style={styles.categoryBadgeDetail}>
-                    <Text style={styles.categoryTextDetail}>{selectedTask.category}</Text>
-                  </View>
-                </View>
-                <Text style={styles.detailTitle}>{selectedTask.title}</Text>
-                <View style={styles.readStatusRow}>
-                  <View
-                    style={[styles.readStatusDot, { backgroundColor: selectedTask.isRead ? "#10B981" : "#F59E0B" }]}
-                  />
-                  <Text style={styles.readStatusText}>{selectedTask.isRead ? "Read" : "Unread"}</Text>
-                </View>
-              </View>
-
-              {/* Quick Info Grid */}
-              <View style={styles.quickInfoGrid}>
-                <View style={styles.quickInfoItem}>
-                  <Ionicons name="location" size={20} color="#FF4D4D" />
-                  <View style={styles.quickInfoContent}>
-                    <Text style={styles.quickInfoLabel}>Location</Text>
-                    <Text style={styles.quickInfoValue}>{selectedTask.location}</Text>
-                  </View>
-                </View>
-                <View style={styles.quickInfoItem}>
-                  <Ionicons name="time" size={20} color="#1B2560" />
-                  <View style={styles.quickInfoContent}>
-                    <Text style={styles.quickInfoLabel}>Time</Text>
-                    <Text style={styles.quickInfoValue}>{selectedTask.timeAgo || selectedTask.time}</Text>
-                  </View>
-                </View>
-                <View style={styles.quickInfoItem}>
-                  <Ionicons name="person" size={20} color="#10B981" />
-                  <View style={styles.quickInfoContent}>
-                    <Text style={styles.quickInfoLabel}>Assigned To</Text>
-                    <Text style={styles.quickInfoValue}>{selectedTask.assignedTo}</Text>
-                  </View>
-                </View>
-                <View style={styles.quickInfoItem}>
-                  <Ionicons name="business" size={20} color="#8B5CF6" />
-                  <View style={styles.quickInfoContent}>
-                    <Text style={styles.quickInfoLabel}>Department</Text>
-                    <Text style={styles.quickInfoValue}>{selectedTask.department || "N/A"}</Text>
-                  </View>
-                </View>
-              </View>
-
-              {/* Description Section */}
-              <View style={styles.sectionCard}>
-                <View style={styles.sectionHeaderRow}>
-                  <Ionicons name="document-text" size={20} color="#1B2560" />
-                  <Text style={styles.sectionTitle}>Description</Text>
-                </View>
-                <Text style={styles.descriptionText}>{selectedTask.description}</Text>
-              </View>
-
-              {/* Additional Details */}
-              <View style={styles.sectionCard}>
-                <View style={styles.sectionHeaderRow}>
-                  <Ionicons name="information-circle" size={20} color="#1B2560" />
-                  <Text style={styles.sectionTitle}>Additional Information</Text>
-                </View>
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Task ID:</Text>
-                  <Text style={styles.detailValue}>{selectedTask.taskId || "N/A"}</Text>
-                </View>
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Reported By:</Text>
-                  <Text style={styles.detailValue}>{selectedTask.reportedBy || "N/A"}</Text>
-                </View>
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Status:</Text>
-                  <Text style={styles.detailValue}>{selectedTask.status}</Text>
-                </View>
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Due Date:</Text>
-                  <Text style={styles.detailValue}>{selectedTask.dueDate}</Text>
-                </View>
-              </View>
-
-              {/* Instructions */}
-              <View style={styles.sectionCard}>
-                <View style={styles.sectionHeaderRow}>
-                  <Ionicons name="list" size={20} color="#1B2560" />
-                  <Text style={styles.sectionTitle}>Instructions</Text>
-                </View>
-                <View style={styles.instructionsList}>
-                  <View style={styles.instructionItem}>
-                    <View style={styles.instructionNumber}>
-                      <Text style={styles.instructionNumberText}>1</Text>
-                    </View>
-                    <Text style={styles.instructionText}>
-                      {selectedTask.category === "Meeting Notice"
-                        ? "Check meeting details and confirm attendance"
-                        : "Assemble at designated staging area immediately"}
-                    </Text>
-                  </View>
-                  <View style={styles.instructionItem}>
-                    <View style={styles.instructionNumber}>
-                      <Text style={styles.instructionNumberText}>2</Text>
-                    </View>
-                    <Text style={styles.instructionText}>
-                      {selectedTask.category === "Meeting Notice"
-                        ? "Prepare necessary documents and materials"
-                        : "Conduct equipment check before deployment"}
-                    </Text>
-                  </View>
-                  <View style={styles.instructionItem}>
-                    <View style={styles.instructionNumber}>
-                      <Text style={styles.instructionNumberText}>3</Text>
-                    </View>
-                    <Text style={styles.instructionText}>
-                      {selectedTask.category === "Meeting Notice"
-                        ? "Join meeting at scheduled time"
-                        : "Establish communication protocols"}
-                    </Text>
-                  </View>
-                  <View style={styles.instructionItem}>
-                    <View style={styles.instructionNumber}>
-                      <Text style={styles.instructionNumberText}>4</Text>
-                    </View>
-                    <Text style={styles.instructionText}>
-                      {selectedTask.category === "Meeting Notice"
-                        ? "Participate actively in discussions"
-                        : "Brief team on specific mission objectives"}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              {/* Required Resources (for active tasks) */}
-              {selectedTask.isActive && (
-                <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeaderRow}>
-                    <Ionicons name="construct" size={20} color="#1B2560" />
-                    <Text style={styles.sectionTitle}>Required Resources</Text>
-                  </View>
-                  <View style={styles.resourceGrid}>
-                    <View style={styles.resourceItem}>
-                      <Ionicons name="boat" size={16} color="#1B2560" />
-                      <Text style={styles.resourceText}>Rescue boats</Text>
-                    </View>
-                    <View style={styles.resourceItem}>
-                      <Ionicons name="shield" size={16} color="#1B2560" />
-                      <Text style={styles.resourceText}>Life vests</Text>
-                    </View>
-                    <View style={styles.resourceItem}>
-                      <Ionicons name="radio" size={16} color="#1B2560" />
-                      <Text style={styles.resourceText}>Communication radios</Text>
-                    </View>
-                    <View style={styles.resourceItem}>
-                      <Ionicons name="medical" size={16} color="#1B2560" />
-                      <Text style={styles.resourceText}>First aid kits</Text>
-                    </View>
-                  </View>
-                </View>
-              )}
-            </ScrollView>
-          </SafeAreaView>
-        </View>
+        
       </Modal>
     )
   }
@@ -883,10 +687,7 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
         </View>
       </View>
 
-      {renderDetailModal()}
-
-      {/* Notifications Modal with Updated Colors */}
-      <Modal
+      {/* <Modal
         animationType="slide"
         transparent={false}
         visible={notificationsVisible}
@@ -895,7 +696,6 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
         <View style={styles.modalContainer}>
           <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
           <SafeAreaView style={styles.modalSafeArea}>
-            {/* Header with updated gradient */}
             <View style={styles.notificationModalHeaderContainer}>
               <LinearGradient
                 colors={["#1B2560", "#FF4D4D"]}
@@ -914,7 +714,6 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
               <View style={styles.notificationModalCurvedBottom} />
             </View>
 
-            {/* Notification Tabs */}
             <View style={styles.notificationTabContainer}>
               <TouchableOpacity
                 style={[styles.notificationTab, activeNotificationTab === "all" && styles.activeNotificationTab]}
@@ -954,17 +753,14 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
               </TouchableOpacity>
             </View>
 
-            {/* Section Header with Mark All Button - Only show for non-archived notifications */}
             {activeNotificationTab === "all" && (
               <View style={styles.sectionHeaderContainer}>
                 <View style={styles.sectionHeaderRow}>
-                  {/* Notification Bell + Title */}
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Ionicons name="notifications-outline" size={20} color="#1B2560" style={{ marginRight: 6 }} />
                     <Text style={styles.sectionTitle}>All Notifications</Text>
                   </View>
 
-                  {/* Mark All as Read Button */}
                   <TouchableOpacity style={styles.markAllButton} onPress={handleMarkAllNotificationsAsRead}>
                     <Ionicons name="checkmark-done" size={16} color="#1B2560" />
                     <Text style={styles.markAllButtonText}>Mark All as Read</Text>
@@ -973,11 +769,9 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
               </View>
             )}
 
-            {/* Archived Header - Only show for archived notifications */}
             {activeNotificationTab === "archived" && (
               <View style={styles.sectionHeaderContainer}>
                 <View style={styles.sectionHeaderRow}>
-                  {/* Archive Icon + Title */}
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Ionicons name="archive-outline" size={20} color="#64748B" style={{ marginRight: 6 }} />
                     <Text style={styles.sectionTitle}>Archived Notifications</Text>
@@ -1015,9 +809,8 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
             </View>
           </SafeAreaView>
         </View>
-      </Modal>
+      </Modal> */}
 
-      {/* Notification Detail Modal with Updated Colors */}
       {selectedNotification && (
         <Modal
           animationType="slide"
@@ -1046,7 +839,6 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
                 contentContainerStyle={styles.modalScrollContent}
                 showsVerticalScrollIndicator={false}
               >
-                {/* Archive Button - Only show for non-archived notifications */}
                 {activeNotificationTab !== "archived" && (
                   <TouchableOpacity
                     style={styles.archiveButton}
@@ -1060,7 +852,6 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
                   </TouchableOpacity>
                 )}
 
-                {/* Restore Button - Only show for archived notifications */}
                 {activeNotificationTab === "archived" && (
                   <TouchableOpacity
                     style={[styles.archiveButton, { backgroundColor: "#10B981" }]}
@@ -1074,7 +865,6 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
                   </TouchableOpacity>
                 )}
 
-                {/* Main Info Card */}
                 <View style={styles.mainInfoCard}>
                   <View style={styles.badgeRow}>
                     <View
@@ -1108,7 +898,6 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
                   </View>
                 </View>
 
-                {/* Quick Info Grid */}
                 <View style={styles.quickInfoGrid}>
                   <View style={styles.quickInfoItem}>
                     <Ionicons name="location" size={20} color="#FF4D4D" />
@@ -1140,7 +929,6 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
                   </View>
                 </View>
 
-                {/* Description Section */}
                 <View style={styles.sectionCard}>
                   <View style={styles.sectionHeaderRow}>
                     <Ionicons name="document-text" size={20} color="#1B2560" />
@@ -1149,7 +937,6 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
                   <Text style={styles.descriptionText}>{selectedNotification.description}</Text>
                 </View>
 
-                {/* Additional Details */}
                 <View style={styles.sectionCard}>
                   <View style={styles.sectionHeaderRow}>
                     <Ionicons name="information-circle" size={20} color="#1B2560" />
