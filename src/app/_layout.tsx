@@ -2,6 +2,7 @@ import api from "@/lib/api";
 import { STORE_EXPO_PUSH_TOKEN_KEY, TASK_GET_LOCATION } from "@/lib/constants";
 import { registerForPushNotificationsAsync } from "@/lib/notifications";
 import { ProfileProvider, useProfileDispatch } from "@/providers/ProfileProvider";
+import NetInfo from '@react-native-community/netinfo';
 import { LinearGradient } from "expo-linear-gradient";
 import { LocationObject, stopLocationUpdatesAsync } from "expo-location";
 import * as Notifications from 'expo-notifications';
@@ -85,6 +86,12 @@ function RootContent() {
     initialize().finally(() => {
       SplashScreen.hide();
     }); 
+
+    const unsubscribe = NetInfo.addEventListener(state => {
+      if (state.isConnected) {
+        initialize();
+      }
+    });
     
     registerForPushNotificationsAsync()
       .then(token => {
@@ -101,6 +108,7 @@ function RootContent() {
 
     return () => {
       responseListener.remove();
+      unsubscribe();
     };
   }, []);
 
