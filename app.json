@@ -54,6 +54,12 @@
           }
         }
       ],
+      [
+        "expo-asset",
+        {
+          "assetBundlePatterns": ["**/*", "**/*.html"]
+        }
+      ],
       "expo-router",
       "expo-secure-store"
     ],

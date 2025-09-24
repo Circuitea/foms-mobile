@@ -1,8 +1,10 @@
 "use client"
 
+import { Map } from "@/components/Map"
 import { Ionicons } from "@expo/vector-icons"
 import { useFocusEffect } from "@react-navigation/native"
 import { LinearGradient } from "expo-linear-gradient"
+import { useRouter } from "expo-router"
 import { useCallback, useState } from "react"
 import {
   Alert,
@@ -126,6 +128,8 @@ export default function MapScreen() {
       isRead: false,
     },
   ])
+
+  const router = useRouter();
 
   const [archivedNotifications, setArchivedNotifications] = useState<Notification[]>([])
 
@@ -557,23 +561,6 @@ export default function MapScreen() {
           {renderMapContent(false)}
         </TouchableOpacity>
 
-        <View style={styles.legendContainer}>
-          <Text style={styles.legendTitle}>Personnel Status</Text>
-          <View style={styles.legendItems}>
-            <View style={styles.legendItem}>
-              <View style={[styles.legendDot, { backgroundColor: "#10B981" }]} />
-              <Text style={styles.legendText}>Active (24)</Text>
-            </View>
-            <View style={styles.legendItem}>
-              <View style={[styles.legendDot, { backgroundColor: "#F59E0B" }]} />
-              <Text style={styles.legendText}>On Duty (38)</Text>
-            </View>
-            <View style={styles.legendItem}>
-              <View style={[styles.legendDot, { backgroundColor: "#EF4444" }]} />
-              <Text style={styles.legendText}>Emergency (2)</Text>
-            </View>
-          </View>
-        </View>
       </View>
 
       {/* Notifications Modal */}
@@ -830,29 +817,7 @@ export default function MapScreen() {
           <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
 
           {/* FIXED: Updated curved header container (matching personal information screen) */}
-          <View style={styles.fullScreenHeaderContainer}>
-            <LinearGradient
-              colors={["#1E3A8A", "#3B82F6", "#EF4444"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.fullScreenHeaderGradient}
-            >
-              <SafeAreaView style={styles.fullScreenHeaderSafeArea}>
-                <View style={styles.fullScreenHeaderContent}>
-                  <TouchableOpacity style={styles.backButton} onPress={handleBackFromFullScreen}>
-                    <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-                  </TouchableOpacity>
-                  <Text style={styles.fullScreenTitle}>Interactive Map</Text>
-                  <View style={styles.headerSpacer} />
-                </View>
-              </SafeAreaView>
-            </LinearGradient>
-
-            {/* This is the curved bottom part */}
-            <View style={styles.fullScreenCurvedBottom} />
-          </View>
-
-          <View style={styles.fullScreenMapContainer}>{renderMapContent(true)}</View>
+          <Map isFullscreen />
         </View>
       </Modal>
 
@@ -1473,13 +1438,6 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#E5E7EB",
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    minHeight: 32,
-    gap: 48,
   },
   sectionTitle: {
     fontSize: 16,
