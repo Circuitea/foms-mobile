@@ -126,7 +126,7 @@ export default function ProfileScreen() {
   const confirmSignOut = async () => {
     const response = await api.delete('/logout');
 
-    router.replace('/');
+    if (response.status === 200) router.navigate('/');
   }
 
   const handleSignOut = () => {

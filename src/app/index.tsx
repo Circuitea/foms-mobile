@@ -47,7 +47,7 @@ export default function Index() {
         'token': expoToken,
       })
 
-      router.replace('/(tabs)');
+      router.replace('/(tabs)/home');
     }
   }
 

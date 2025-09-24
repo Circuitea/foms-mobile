@@ -75,7 +75,7 @@ function RootContent() {
           user: response.data,
         });
         
-        router.replace('/(tabs)');
+        router.replace('/(tabs)/home');
       } catch (error) {
         console.log('Removing profile data');   
         profileDispatch({ type: 'remove' });
