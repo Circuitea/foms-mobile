@@ -180,6 +180,13 @@ export default function RootLayout() {
             href: null,
           }}
         />
+
+        <Tabs.Screen
+          name="task/[id]"
+          options={{
+            href: null,
+          }}
+        />
       </Tabs>
     </>
   )
