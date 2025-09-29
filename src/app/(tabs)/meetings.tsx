@@ -1003,17 +1003,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
   },
-  priorityBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginRight: 8,
-  },
-  priorityText: {
-    color: "#FFFFFF",
-    fontSize: 10,
-    fontWeight: "600",
-  },
   categoryText: {
     fontSize: 12,
     color: "#6B7280",
@@ -1296,11 +1285,6 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
-  descriptionText: {
-    fontSize: 14,
-    color: "#6B7280",
-    lineHeight: 22,
-  },
   // Notification styles
   headerRight: {
     flexDirection: "row",
@@ -1464,11 +1448,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginRight: 8,
   },
-  categoryText: {
-    color: "#6B7280",
-    fontSize: 12,
-    marginLeft: 4,
-  },
   taskId: {
     color: "#3B82F6",
     fontSize: 12,
@@ -1510,10 +1489,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#E5E7EB",
     paddingTop: 12,
-  },
-  timeText: {
-    fontSize: 12,
-    color: "#6B7280",
   },
   tapHint: {
     fontSize: 12,

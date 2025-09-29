@@ -564,19 +564,19 @@ export default function HomeScreen() {
                 </View>
 
                 <View style={styles.taskMeta}>
-                  <View style={styles.taskMetaItem}>
+                  <View>
                     <Ionicons name="time-outline" size={14} color="#6B7280" />
-                    <Text style={styles.taskMetaText}>6 hours</Text>
+                    <Text>6 hours</Text>
                   </View>
 
-                  <View style={styles.taskMetaItem}>
+                  <View>
                     <Ionicons name="people-outline" size={14} color="#6B7280" />
-                    <Text style={styles.taskMetaText}>1 assigned</Text>
+                    <Text>1 assigned</Text>
                   </View>
 
-                  <View style={styles.taskMetaItem}>
+                  <View>
                     <Ionicons name="calendar-outline" size={14} color="#6B7280" />
-                    <Text style={styles.taskMetaText}>Due: 1/16/2024</Text>
+                    <Text>Due: 1/16/2024</Text>
                   </View>
                 </View>
 

@@ -108,7 +108,7 @@ export default function Index() {
         {/* <Button title="Login" /> */}
         <Button title="Login" onPress={onSubmit} />
         
-        <Link style={formStyles.forgotPassword} href="/(tabs)">Forgot Password</Link>
+        <Link style={formStyles.forgotPassword} href="/forgotPassword">Forgot Password</Link>
       </View>
     </KeyboardAvoidingView>
   );
