@@ -1,11 +1,13 @@
 "use client"
 
+import Button from "@/components/Button"
+import { TaskStatusModal } from "@/components/TaskStatusModal"
 import api from "@/lib/api"
 import { Task } from "@/types/tasks"
 import { ConsumableItem, ConsumableTransaction, EquipmentItem, EquipmentTransaction, Transaction } from "@/types/transaction"
 import { Ionicons } from "@expo/vector-icons"
-import { useLocalSearchParams, useRouter } from "expo-router"
-import { useEffect, useState } from "react"
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
+import { useCallback, useEffect, useState } from "react"
 import {
   ActivityIndicator,
   Platform,
@@ -28,6 +30,11 @@ type TaskWithProps = Task & {
 export default function TasksScreen() {
   const { id } = useLocalSearchParams();
   const [task, setTask] = useState<TaskWithProps | null>(null);
+  const [statusModalVisible, setStatusModalVisible] = useState(false);
+  useFocusEffect(useCallback(() => {
+    setStatusModalVisible(false);
+  }, []));
+
   useEffect(() => {
     async function getTask() {
       const response = await api.get<{ task: TaskWithProps }>(`/task/${id}`);
@@ -45,20 +52,55 @@ export default function TasksScreen() {
 
   const router = useRouter();
 
+  async function updateTaskStatus(status: 'started' | 'finished' | 'canceled', additional_notes?: string) {
+    const response = await api.post<{ task: TaskWithProps }>(`/task/${task?.id}/status`, {
+      status,
+      additional_notes,
+    });
+
+    if (!!response.data.task) {
+      setTask(response.data.task);
+    }
+  }
+
   return !task ? (
     <ActivityIndicator />
   ) : (
     <View style={styles.modalContainer}>
       <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
       <SafeAreaView style={styles.modalSafeArea}>
-        <View
-          style={styles.modalHeader}
-        >
+        <View style={styles.modalHeader}>
           <TouchableOpacity style={styles.backButton} onPress={() => router.navigate('/(tabs)/tasks')}>
             <Ionicons name="arrow-back" size={24} color="#000000" />
           </TouchableOpacity>
           <Text style={styles.modalHeaderTitle}>Task Details</Text>
-          <View style={styles.headerSpacer} />
+          {!!task.pivot.finished_at 
+            ? (
+              <View style={styles.headerSpacer} />
+            )
+            : !!task.pivot.started_at
+              ? (
+                <Button
+                  buttonStyle={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    width: 'auto',
+                  }}
+                  onPress={() => setStatusModalVisible(true)}
+                  title="Update Task"
+                /> )
+              : (
+                <Button
+                  buttonStyle={{
+                    backgroundColor: 'green',
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    width: 'auto',
+                  }}
+                  onPress={() => updateTaskStatus('started')}
+                  title="Start Task"
+                />
+              )}
         </View>
 
         <ScrollView
@@ -171,28 +213,53 @@ export default function TasksScreen() {
                     <Text style={styles.resourceText}>{consumable.item.name} x {consumable.quantity}</Text>
                   </View>
                 ))}
-                {/* <View style={styles.resourceItem}>
-                  <Ionicons name="shield" size={16} color="#1B2560" />
-                  <Text style={styles.resourceText}>Life vests</Text>
-                </View>
-                <View style={styles.resourceItem}>
-                  <Ionicons name="radio" size={16} color="#1B2560" />
-                  <Text style={styles.resourceText}>Communication radios</Text>
-                </View>
-                <View style={styles.resourceItem}>
-                  <Ionicons name="medical" size={16} color="#1B2560" />
-                  <Text style={styles.resourceText}>First aid kits</Text>
-                </View> */}
               </View>
+            </View>
+          )}
+
+          {!!task.pivot.additional_notes && (
+            <View style={styles.sectionCard}>
+              <View style={styles.sectionHeaderRow}>
+                <Ionicons name="reader-outline" size={20} color="#1B2560" />
+                <Text style={styles.sectionTitle}>Additional Notes</Text>
+              </View>
+              <Text style={styles.multilineInput}>{task.pivot.additional_notes}</Text>
             </View>
           )}
         </ScrollView>
       </SafeAreaView>
+      <TaskStatusModal
+        visible={statusModalVisible}
+        onRequestClose={() => setStatusModalVisible(false)}
+        onTaskFinish={(notes) => {
+          updateTaskStatus('finished', notes)
+          setStatusModalVisible(false)
+        }}
+        onTaskCancel={() => {
+          updateTaskStatus('canceled')
+          setStatusModalVisible(false)
+        }}
+        onOpenChange={setStatusModalVisible}
+      />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  multilineInput: {
+    minHeight: 80,
+    maxHeight: 160,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#CBD5E1",
+    backgroundColor: "#F3F4F6",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: "#1E293B",
+    marginBottom: 16,
+    textAlignVertical: "top", // ensures text starts at the top for multiline
+  },
   container: {
     flex: 1,
     backgroundColor: "#F8FAFC",

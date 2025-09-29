@@ -22,11 +22,6 @@ TaskManager.defineTask<{ locations: LocationObject[] }>(TASK_GET_LOCATION, async
 
   const { latitude, longitude } = locations[0].coords;
 
-  console.log(new Date().toISOString());
-  console.log('New locations count:', locations.length);
-
-  locations.forEach((location, i) => console.log(`Location[${i}]: (${location.coords.latitude}, ${location.coords.longitude}) - ${location.timestamp} - ${location.mocked ? 'mocked' : 'real'}`))
-
   return api.post('/location', {
     latitude,
     longitude,

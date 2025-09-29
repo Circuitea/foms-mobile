@@ -1,4 +1,4 @@
-import { GestureResponderEvent, Platform, Pressable, StyleProp, StyleSheet, Text, TextStyle, ViewStyle } from "react-native";
+import { GestureResponderEvent, Platform, StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from "react-native";
 
 interface ButtonProps {
     title: string;
@@ -9,12 +9,13 @@ interface ButtonProps {
 
 export default function Button({ title, onPress, buttonStyle, textStyle }: ButtonProps) {
     return (
-        <Pressable
+        <TouchableOpacity
+            activeOpacity={0.7}
             onPress={onPress}
             style={StyleSheet.flatten([styles.button, buttonStyle])}
         >
             <Text style={StyleSheet.flatten([styles.text, textStyle])}>{title}</Text>
-        </Pressable>
+        </TouchableOpacity>
     )
 }
 
