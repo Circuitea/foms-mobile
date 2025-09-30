@@ -22,7 +22,7 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ],
-      "package": "xyz.djcayz.fomsmobile"
+      "package": "xyz.djcayz.foms.dev"
     },
     "web": {
       "bundler": "metro",
