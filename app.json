@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Field Operations MS",
+    "name": "Field Operations MS (Development)",
     "slug": "foms-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "bundleIdentifier": "xyz.djcayz.fomsmobile",
+      "bundleIdentifier": "xyz.djcayz.foms.dev",
       "supportsTablet": true
     },
     "android": {

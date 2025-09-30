@@ -8,18 +8,24 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
+        "APP_NAME": "Field Operations MS (Development)",
+        "PACKAGE_NAME": "xyz.djcayz.foms.dev",
         "API_URL": "http://localhost:3000/api/"
       }
     },
     "preview": {
       "distribution": "internal",
       "env": {
+        "APP_NAME": "Field Operations MS (Internal)",
+        "PACKAGE_NAME": "xyz.djcayz.foms.internal",
         "API_URL": "https://foms.djcayz.xyz/api"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
+        "APP_NAME": "FOMS Dev",
+        "PACKAGE_NAME": "xyz.djcayz.foms-mobile",
         "API_URL": "https://foms.djcayz.xyz/api"
       }
     }
