@@ -180,6 +180,12 @@ export default function RootLayout() {
             href: null,
           }}
         />
+        <Tabs.Screen
+          name="profile/status"
+          options={{
+            href: null,
+          }}
+        />
 
         <Tabs.Screen
           name="task/[id]"

@@ -1,4 +1,4 @@
-import { User } from "@/types";
+import { Status, User } from "@/types";
 import { ActionDispatch, createContext, PropsWithChildren, useContext, useReducer } from "react";
 
 export const ProfileContext = createContext<User | null>(null);
@@ -40,17 +40,28 @@ function profileReducer(profile: User | null, action: Action) {
   switch(action.type) {
     case 'set':
       return action.user;
+
+    case 'updateStatus':
+      return {
+        ...profile,
+        status: action.status,
+      };
     
     case 'remove':
       return null;
   }
 }
 
-type Action = SetProfileAction | RemoveProfileAction;
+type Action = SetProfileAction | RemoveProfileAction | UpdateStatusAction;
 
 interface SetProfileAction {
   type: 'set';
   user: User;
+}
+
+interface UpdateStatusAction {
+  type: 'updateStatus';
+  status: Status;
 }
 
 interface RemoveProfileAction {

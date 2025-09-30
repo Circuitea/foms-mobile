@@ -123,6 +123,10 @@ export default function ProfileScreen() {
     router.push("/profile/help-support")
   }
 
+  const handleStatus = () => {
+    router.push("/profile/status")
+  }
+
   const confirmSignOut = async () => {
     const response = await api.delete('/logout');
 
@@ -333,6 +337,12 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.menuSection}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleStatus}>
+            <Ionicons name="radio-button-on" size={24} color="#6B7280" />
+            <Text style={styles.menuText}>Status</Text>
+            <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+          </TouchableOpacity>
+
           <TouchableOpacity style={styles.menuItem} onPress={handlePersonalInformation}>
             <Ionicons name="person-outline" size={24} color="#6B7280" />
             <Text style={styles.menuText}>Personal Information</Text>
