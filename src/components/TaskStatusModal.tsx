@@ -64,14 +64,27 @@ export function TaskStatusModal(props: ModalProps & {
                         multiline
                         numberOfLines={3}
                       />
-                      <Button title="Submit and Finalize Task" onPress={() => props.onTaskFinish && props.onTaskFinish(notes)} />
+                      <Button title="Submit and Finalize Task" onPress={() => {
+                          if (props.onTaskFinish) props.onTaskFinish(notes)
+                          
+                          if (props.onOpenChange) props.onOpenChange(false)
+                        }}
+                      />
                       <Button title="Cancel" onPress={() => setAction(null)} />
                     </View>
                   )
                   : (
                     <View style={{ flex: 1, justifyContent: 'center' }}>
                       <Text>Are you sure you want to cancel the task?</Text>
-                      <Button title="Cancel the Task" onPress={() => props.onTaskCancel && props.onTaskCancel()} />
+                      <Button title="Cancel the Task" onPress={() => {
+                        if (props.onTaskCancel) {
+                          props.onTaskCancel()
+                        }
+
+                        if (props.onOpenChange) {
+                          props.onOpenChange(false)
+                        }
+                      }} />
                       <Button title="Go Back" onPress={() => setAction(null)} />
                     </View>
 
