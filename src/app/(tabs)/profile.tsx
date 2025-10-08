@@ -327,13 +327,9 @@ export default function ProfileScreen() {
         <View style={styles.profileCard}>
           <View style={styles.avatarWrapper}>
             <Ionicons name="person" size={80} color="#3B82F6" />
-            <View style={styles.cameraIconContainer}>
-              <Ionicons name="camera" size={16} color="#FFFFFF" />
-            </View>
           </View>
           <Text style={styles.userName}>{profile.first_name} {profile.surname.charAt(0).toUpperCase()}.</Text>
           <Text style={styles.userRole}>{profile.position ?? 'CDRRMO Personnel'}</Text>
-          <Text style={styles.userDepartment}>CDRRMO - Emergency Operations</Text>
         </View>
 
         <View style={styles.menuSection}>
@@ -351,13 +347,7 @@ export default function ProfileScreen() {
 
           <TouchableOpacity style={styles.menuItem} onPress={handlePrivacySecurity}>
             <Ionicons name="shield-outline" size={24} color="#6B7280" />
-            <Text style={styles.menuText}>Privacy & Security</Text>
-            <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuItem} onPress={handleHelpSupport}>
-            <Ionicons name="help-circle-outline" size={24} color="#6B7280" />
-            <Text style={styles.menuText}>Help & Support</Text>
+            <Text style={styles.menuText}>Account Password</Text>
             <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
           </TouchableOpacity>
 

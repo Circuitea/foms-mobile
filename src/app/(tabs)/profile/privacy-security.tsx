@@ -13,11 +13,10 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Switch,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native"
 
 export default function PrivacySecurityScreen() {
@@ -166,66 +165,7 @@ export default function PrivacySecurityScreen() {
 
   const renderChangePasswordModal = () => (
     <Modal animationType="slide" transparent={false} visible={changePasswordModal}>
-      <View style={styles.modalContainer}>
-        <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
-        <SafeAreaView style={styles.modalSafeArea}>
-          <LinearGradient
-            colors={["#1B2560", "#FF4D4D"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.modalHeader}
-          >
-            <TouchableOpacity style={styles.backButton} onPress={() => setChangePasswordModal(false)}>
-              <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-            </TouchableOpacity>
-            <Text style={styles.modalHeaderTitle}>Change Password</Text>
-            <View style={styles.headerSpacer} />
-          </LinearGradient>
-
-          <ScrollView style={styles.modalContent}>
-            <View style={styles.formSection}>
-              <Text style={styles.formLabel}>Current Password</Text>
-              <TextInput
-                style={styles.formInput}
-                value={currentPassword}
-                onChangeText={setCurrentPassword}
-                secureTextEntry
-                placeholder="Enter current password"
-              />
-
-              <Text style={styles.formLabel}>New Password</Text>
-              <TextInput
-                style={styles.formInput}
-                value={newPassword}
-                onChangeText={setNewPassword}
-                secureTextEntry
-                placeholder="Enter new password"
-              />
-
-              <Text style={styles.formLabel}>Confirm New Password</Text>
-              <TextInput
-                style={styles.formInput}
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                secureTextEntry
-                placeholder="Confirm new password"
-              />
-
-              <View style={styles.passwordRequirements}>
-                <Text style={styles.requirementsTitle}>Password Requirements:</Text>
-                <Text style={styles.requirementText}>• At least 8 characters long</Text>
-                <Text style={styles.requirementText}>• Contains uppercase and lowercase letters</Text>
-                <Text style={styles.requirementText}>• Contains at least one number</Text>
-                <Text style={styles.requirementText}>• Contains at least one special character</Text>
-              </View>
-
-              <TouchableOpacity style={styles.submitButton} onPress={handleChangePassword}>
-                <Text style={styles.submitButtonText}>Change Password</Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        </SafeAreaView>
-      </View>
+      
     </Modal>
   )
 
@@ -453,99 +393,59 @@ export default function PrivacySecurityScreen() {
 
       {/* Updated Header with curved bottom (matching personal information screen) */}
       <View style={styles.headerContainer}>
-        <LinearGradient
-          colors={["#1B2560", "#FF4D4D"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.headerGradient}
-        >
-          <SafeAreaView style={styles.headerSafeArea}>
-            <View style={styles.headerContent}>
-              <TouchableOpacity style={styles.backButton} onPress={navigateToProfile}>
-                <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-              </TouchableOpacity>
-              <Text style={styles.headerTitle}>Privacy & Security</Text>
-              <View style={{ width: 24 }} />
-            </View>
-          </SafeAreaView>
-        </LinearGradient>
-
-        {/* This is the curved bottom part */}
-        <View style={styles.curvedBottom} />
+        <SafeAreaView style={styles.headerSafeArea}>
+          <View style={styles.headerContent}>
+            <TouchableOpacity style={styles.backButton} onPress={navigateToProfile}>
+              <Ionicons name="arrow-back" size={24} color="#000000" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Change Password</Text>
+            <View style={{ width: 24 }} />
+          </View>
+        </SafeAreaView>
       </View>
 
       <ScrollView style={styles.content}>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Account Security</Text>
+        <View style={styles.formSection}>
+          <Text style={styles.formLabel}>Current Password</Text>
+          <TextInput
+            style={styles.formInput}
+            value={currentPassword}
+            onChangeText={setCurrentPassword}
+            secureTextEntry
+            placeholder="Enter current password"
+          />
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => setChangePasswordModal(true)}>
-            <View style={styles.menuItemLeft}>
-              <Ionicons name="lock-closed-outline" size={24} color="#1B2560" />
-              <Text style={styles.menuText}>Change Password</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
-          </TouchableOpacity>
+          <Text style={styles.formLabel}>New Password</Text>
+          <TextInput
+            style={styles.formInput}
+            value={newPassword}
+            onChangeText={setNewPassword}
+            secureTextEntry
+            placeholder="Enter new password"
+          />
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => setSecurityQuestionsModal(true)}>
-            <View style={styles.menuItemLeft}>
-              <Ionicons name="shield-checkmark-outline" size={24} color="#1B2560" />
-              <Text style={styles.menuText}>Security Questions</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
-          </TouchableOpacity>
+          <Text style={styles.formLabel}>Confirm New Password</Text>
+          <TextInput
+            style={styles.formInput}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+            placeholder="Confirm new password"
+          />
 
-          <View style={styles.toggleItem}>
-            <View style={styles.toggleItemLeft}>
-              <Ionicons name="shield-outline" size={24} color="#1B2560" />
-              <Text style={styles.toggleText}>Two-Factor Authentication</Text>
-            </View>
-            <Switch
-              trackColor={{ false: "#D1D5DB", true: "#93C5FD" }}
-              thumbColor={twoFactorEnabled ? "#1B2560" : "#F3F4F6"}
-              onValueChange={() => setTwoFactorEnabled(!twoFactorEnabled)}
-              value={twoFactorEnabled}
-            />
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Privacy Settings</Text>
-
-          <View style={styles.toggleItem}>
-            <View style={styles.toggleItemLeft}>
-              <Ionicons name="notifications-outline" size={24} color="#1B2560" />
-              <Text style={styles.toggleText}>Push Notifications</Text>
-            </View>
-            <Switch
-              trackColor={{ false: "#D1D5DB", true: "#93C5FD" }}
-              thumbColor={notificationsEnabled ? "#1B2560" : "#F3F4F6"}
-              onValueChange={() => setNotificationsEnabled(!notificationsEnabled)}
-              value={notificationsEnabled}
-            />
+          <View style={styles.passwordRequirements}>
+            <Text style={styles.requirementsTitle}>Password Requirements:</Text>
+            <Text style={styles.requirementText}>• At least 8 characters long</Text>
+            <Text style={styles.requirementText}>• Contains uppercase and lowercase letters</Text>
+            <Text style={styles.requirementText}>• Contains at least one number</Text>
+            <Text style={styles.requirementText}>• Contains at least one special character</Text>
           </View>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => setPrivacyPolicyModal(true)}>
-            <View style={styles.menuItemLeft}>
-              <Ionicons name="eye-off-outline" size={24} color="#1B2560" />
-              <Text style={styles.menuText}>Privacy Policy</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuItem} onPress={() => setTermsModal(true)}>
-            <View style={styles.menuItemLeft}>
-              <Ionicons name="document-text-outline" size={24} color="#1B2560" />
-              <Text style={styles.menuText}>Terms of Service</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+          <TouchableOpacity style={styles.submitButton} onPress={handleChangePassword}>
+            <Text style={styles.submitButtonText}>Change Password</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
-
-      {renderChangePasswordModal()}
-      {renderSecurityQuestionsModal()}
-      {renderPrivacyPolicyModal()}
-      {renderTermsModal()}
     </View>
   )
 }
@@ -588,7 +488,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: "#000000",
   },
   content: {
     flex: 1,
