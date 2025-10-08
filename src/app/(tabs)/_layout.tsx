@@ -108,14 +108,15 @@ export default function RootLayout() {
         <Tabs.Screen
           name="map"
           options={{
-            title: "Map",
-            tabBarIcon: ({ color, focused }) => (
-              <View style={styles.mapTabContainer}>
-                <View style={styles.mapTabButton}>
-                  <Ionicons name="map" size={24} color="#FFFFFF" />
-                </View>
-              </View>
-            ),
+            href: null,
+            // title: "Map",
+            // tabBarIcon: ({ color, focused }) => (
+            //   <View style={styles.mapTabContainer}>
+            //     <View style={styles.mapTabButton}>
+            //       <Ionicons name="map" size={24} color="#FFFFFF" />
+            //     </View>
+            //   </View>
+            // ),
           }}
         />
         <Tabs.Screen
