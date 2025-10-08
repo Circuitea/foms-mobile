@@ -5,7 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as Location from 'expo-location';
 import { Tabs } from "expo-router";
 import { useEffect } from "react";
-import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StatusBar, StyleSheet, Text, View } from "react-native";
 
 export default function RootLayout() {
 
@@ -69,26 +69,7 @@ export default function RootLayout() {
                       </View>
                     </View>
                   </View>
-                  <View style={styles.headerRight}>
-                    {/* Enhanced Notification Bell Button */}
-                    <TouchableOpacity style={styles.notificationButton}>
-                      <View style={styles.notificationIconContainer}>
-                        <Ionicons name="notifications" size={24} color="#FFFFFF" />
-                        {/* {getUnreadNotificationsCount() > 0 && (
-                          <View style={styles.notificationBadge}>
-                            <Text style={styles.notificationBadgeText}>
-                              {getUnreadNotificationsCount() > 99 ? "99+" : getUnreadNotificationsCount()}
-                            </Text>
-                          </View>
-                        )} */}
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.profileButton}>
-                      <View style={styles.profileCircle}>
-                        <Ionicons name="person" size={22} color="#FFFFFF" />
-                      </View>
-                    </TouchableOpacity>
-                  </View>
+                  
                 </View>
               </LinearGradient>
 
