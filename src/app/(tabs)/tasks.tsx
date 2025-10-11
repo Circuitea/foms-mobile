@@ -4,6 +4,7 @@ import api from "@/lib/api"
 import { Task } from "@/types/tasks"
 import { Ionicons } from "@expo/vector-icons"
 import { useFocusEffect } from "@react-navigation/native"
+import dayjs from "dayjs"
 import { useRouter } from "expo-router"
 import { useCallback, useRef, useState } from "react"
 import {
@@ -61,11 +62,11 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
           <View
             style={[
               styles.typeBadge,
-              { backgroundColor: task.type.name === "Urgent" ? "#FF4D4D" : task.type.name === "High" ? "#F59E0B" : "#1B2560" },
+              { backgroundColor: task.priority.name === "Urgent" ? "#FF4D4D" : task.priority.name === "High" ? "#F59E0B" : "#1B2560" },
             ]}
           >
-            {task.type.name === "Urgent" && <Ionicons name="warning" size={12} color="#FFFFFF" />}
-            <Text style={styles.typeText}>{task.type.name}</Text>
+            {task.priority.name == "Urgent" && <Ionicons name="warning" size={12} color="#FFFFFF" />}
+            <Text style={styles.typeText}>{task.priority.name}</Text>
           </View>
           <View style={styles.categoryContainer}>
             <Text style={styles.taskCategory}>{task.type.name}</Text>
@@ -90,17 +91,17 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
           </View>
           <View style={styles.taskMetaItem}>
             <Ionicons name="time-outline" size={16} color="#64748B" />
-            <Text style={styles.taskMetaText}>TIME AGO</Text>
+            <Text style={styles.taskMetaText}>{dayjs(task.created_at).format('YYYY/MM/DD HH:mm')}</Text>
           </View>
         </View>
         <View style={styles.taskMetaRow}>
           <View style={styles.taskMetaItem}>
             <Ionicons name="person-outline" size={16} color="#64748B" />
-            <Text style={styles.taskMetaText}>ASSIGNED TO</Text>
+            <Text style={styles.taskMetaText}>{task.creator.first_name}</Text>
           </View>
           <View style={styles.taskMetaItem}>
             <Ionicons name="calendar-outline" size={16} color="#64748B" />
-            <Text style={styles.taskMetaText}>Due: DUE DATE</Text>
+            <Text style={styles.taskMetaText}>Due: {dayjs(task.due_date).format("YYYY/MM/DD HH:mm")}</Text>
           </View>
         </View>
       </View>
