@@ -5,7 +5,7 @@ import { STORE_API_TOKEN_KEY } from './constants';
 
 
 const api = axios.create({
-    baseURL: Constants.expoConfig?.extra?.apiBaseURL ?? 'https://foms.djcayz.xyz/api',
+    baseURL: (Constants.expoConfig?.extra?.apiBaseURL ?? 'https://foms.djcayz.xyz') + '/api',
     timeout: 10000,
 });
 

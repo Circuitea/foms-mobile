@@ -10,7 +10,7 @@
       "env": {
         "APP_NAME": "Field Operations MS (Development)",
         "PACKAGE_NAME": "xyz.djcayz.foms.dev",
-        "API_URL": "http://localhost:3000/api/"
+        "API_URL": "http://localhost:3000"
       }
     },
     "preview": {
@@ -18,7 +18,7 @@
       "env": {
         "APP_NAME": "Field Operations MS (Internal)",
         "PACKAGE_NAME": "xyz.djcayz.foms.internal",
-        "API_URL": "https://foms.djcayz.xyz/api"
+        "API_URL": "https://foms.djcayz.xyz"
       }
     },
     "production": {
@@ -26,7 +26,7 @@
       "env": {
         "APP_NAME": "Field Operations MS",
         "PACKAGE_NAME": "xyz.djcayz.fomsmobile",
-        "API_URL": "https://foms.djcayz.xyz/api"
+        "API_URL": "https://foms.djcayz.xyz"
       }
     }
   },

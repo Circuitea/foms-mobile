@@ -3,112 +3,29 @@
 import api from "@/lib/api"
 import { useProfile } from "@/providers/ProfileProvider"
 import { Ionicons } from "@expo/vector-icons"
-import { LinearGradient } from "expo-linear-gradient"
-import { useRouter } from "expo-router"
-import { useState } from "react"
+import Constants from 'expo-constants'
+import { Image } from 'expo-image'
+import { useFocusEffect, useRouter } from "expo-router"
+import { useCallback } from "react"
 import {
   Alert,
-  Modal,
   Platform,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native"
 
-interface Notification {
-  id: string
-  type: "URGENT" | "NORMAL" | "HIGH"
-  category:
-    | "Team Deployment"
-    | "Meeting Notice"
-    | "Equipment Alert"
-    | "Emergency Response"
-    | "Maintenance"
-    | "Assessment"
-    | "Meeting Reminder"
-  title: string
-  description: string
-  location: string
-  department?: string
-  reportedBy?: string
-  assignedTo?: string
-  assignedCount?: number
-  time: string
-  timeAgo: string
-  status: "Checked" | "Unchecked"
-  taskId?: string
-  dueDate?: string
-  isRead?: boolean
-  archivedAt?: string
-}
-
 export default function ProfileScreen() {
+  const baseURL = Constants.expoConfig?.extra?.apiBaseURL ?? 'https://foms.djcayz.xyz';
   const router = useRouter()
-  const [showPhotoOptions, setShowPhotoOptions] = useState(false)
   const profile = useProfile();
 
-  // Notification states
-  const [notificationsVisible, setNotificationsVisible] = useState(false)
-  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null)
-  const [notificationDetailVisible, setNotificationDetailVisible] = useState(false)
-  const [activeMenuId, setActiveMenuId] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<"all" | "archived">("all")
-
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: "1",
-      type: "URGENT",
-      category: "Team Deployment",
-      title: "Emergency Response Team Alpha - Deploy to Barangay Greenhills",
-      description:
-        "Deploy emergency response team to assist with flood evacuation and rescue operations in Barangay Greenhills.",
-      location: "Barangay Greenhills",
-      department: "Emergency Operations",
-      reportedBy: "Operations Chief Martinez",
-      assignedTo: "Team Alpha Leader",
-      time: "05:44 PM",
-      timeAgo: "8 minutes ago",
-      status: "Checked",
-      taskId: "SJ-OPS-2025-001",
-      isRead: false,
-    },
-    {
-      id: "2",
-      type: "NORMAL",
-      category: "Meeting Notice",
-      title: "Staff Meeting - Post-Incident Review scheduled for 3:00 PM",
-      description: "Conduct post-incident review meeting to discuss recent emergency response operations.",
-      location: "CDRRMO Conference Room",
-      department: "Administration",
-      reportedBy: "CDRRMO Director",
-      time: "05:07 PM",
-      timeAgo: "45 minutes ago",
-      status: "Checked",
-      isRead: true,
-    },
-    {
-      id: "3",
-      type: "NORMAL",
-      category: "Equipment Alert",
-      title: "Equipment Maintenance - Rescue Vehicle Unit 3",
-      description:
-        "Perform scheduled maintenance on Rescue Vehicle Unit 3 including engine check and equipment inventory.",
-      location: "CDRRMO Motor Pool",
-      department: "Maintenance",
-      reportedBy: "Fleet Manager",
-      time: "04:30 PM",
-      timeAgo: "1 hour ago",
-      status: "Unchecked",
-      taskId: "SJ-MAINT-2025-003",
-      isRead: false,
-    },
-  ])
-
-  const [archivedNotifications, setArchivedNotifications] = useState<Notification[]>([])
+  useFocusEffect(useCallback(() => {
+    console.log(`file: ${baseURL + '/storage/' + profile.profile_picture_filename}`);
+  }, []))
 
   // Your existing handlers...
   const handlePersonalInformation = () => {
@@ -117,10 +34,6 @@ export default function ProfileScreen() {
 
   const handlePrivacySecurity = () => {
     router.push("/profile/privacy-security")
-  }
-
-  const handleHelpSupport = () => {
-    router.push("/profile/help-support")
   }
 
   const handleStatus = () => {
@@ -144,181 +57,6 @@ export default function ProfileScreen() {
     )
   }
 
-  const handleChangeProfilePhoto = () => {
-    setShowPhotoOptions(true)
-  }
-
-  const handlePhotoOptionSelect = (option: string) => {
-    setShowPhotoOptions(false)
-
-    if (option === "camera") {
-      Alert.alert("Camera", "Opening camera to take a new profile photo")
-      // Here you would implement camera functionality
-    } else if (option === "gallery") {
-      Alert.alert("Gallery", "Opening gallery to select a profile photo")
-      // Here you would implement photo picker functionality
-    }
-  }
-
-  const getUnreadNotificationsCount = () => {
-    return notifications.filter((n) => !n.isRead).length
-  }
-
-  const handleNotificationClick = (notification: Notification) => {
-    if (!notification.isRead) {
-      setNotifications((prev) => prev.map((n) => (n.id === notification.id ? { ...n, isRead: true } : n)))
-    }
-    setSelectedNotification({ ...notification, isRead: true })
-    setNotificationDetailVisible(true)
-  }
-
-  const handleArchiveNotification = (notificationId: string) => {
-    const notification = notifications.find((n) => n.id === notificationId)
-    if (!notification) return
-
-    const archivedItem = {
-      ...notification,
-      archivedAt: new Date().toLocaleString(),
-    }
-
-    setArchivedNotifications((prev) => [archivedItem, ...prev])
-    setNotifications((prev) => prev.filter((item) => item.id !== notificationId))
-    setActiveMenuId(null)
-    Alert.alert("Archived", "Notification has been moved to archived section.")
-  }
-
-  const handleRestoreNotification = (notificationId: string) => {
-    const notification = archivedNotifications.find((n) => n.id === notificationId)
-    if (!notification) return
-
-    const { archivedAt, ...restoredItem } = notification
-    setNotifications((prev) => [restoredItem, ...prev])
-    setArchivedNotifications((prev) => prev.filter((item) => item.id !== notificationId))
-    setActiveMenuId(null)
-    Alert.alert("Restored", "Notification has been restored to main list.")
-  }
-
-  const handleDeleteNotification = (notificationId: string) => {
-    Alert.alert("Delete Notification", "Are you sure you want to permanently delete this notification?", [
-      { text: "Cancel", style: "cancel", onPress: () => setActiveMenuId(null) },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: () => {
-          setNotifications((prev) => prev.filter((item) => item.id !== notificationId))
-          setArchivedNotifications((prev) => prev.filter((item) => item.id !== notificationId))
-          setActiveMenuId(null)
-          Alert.alert("Deleted", "Notification has been permanently deleted.")
-        },
-      },
-    ])
-  }
-
-  const handleMarkAllAsRead = () => {
-    const unreadCount = getUnreadNotificationsCount()
-    if (unreadCount === 0) {
-      Alert.alert("Mark All as Read", "All notifications are already marked as read.")
-      return
-    }
-
-    Alert.alert("Mark All as Read", `Mark all ${unreadCount} unread notifications as read?`, [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Mark All as Read",
-        onPress: () => {
-          setNotifications((prev) => prev.map((notification) => ({ ...notification, isRead: true })))
-        },
-      },
-    ])
-  }
-
-  const renderNotification = (notification: Notification, isArchived = false) => (
-    <TouchableOpacity
-      key={notification.id}
-      style={[styles.notificationCard, !notification.isRead && styles.unreadCard]}
-      onPress={() => handleNotificationClick(notification)}
-      activeOpacity={0.7}
-    >
-      <View style={styles.notificationHeader}>
-        <View style={styles.notificationLeft}>
-          <View style={[styles.statusIndicator, { backgroundColor: notification.isRead ? "#9CA3AF" : "#3B82F6" }]} />
-          <View
-            style={[
-              styles.typeBadge,
-              {
-                backgroundColor:
-                  notification.type === "URGENT" ? "#EF4444" : notification.type === "HIGH" ? "#F59E0B" : "#1E3A8A",
-              },
-            ]}
-          >
-            <Text style={styles.typeText}>{notification.type}</Text>
-          </View>
-          <View style={styles.categoryBadge}>
-            <Ionicons
-              name={
-                notification.category === "Team Deployment"
-                  ? "people"
-                  : notification.category === "Meeting Notice" || notification.category === "Meeting Reminder"
-                    ? "calendar"
-                    : "construct"
-              }
-              size={16}
-              color="#6B7280"
-            />
-            <Text style={styles.categoryText}>{notification.category}</Text>
-          </View>
-          {notification.taskId && <Text style={styles.taskId}>{notification.taskId}</Text>}
-        </View>
-        <TouchableOpacity onPress={() => setActiveMenuId(activeMenuId === notification.id ? null : notification.id)}>
-          <Ionicons name="ellipsis-vertical" size={20} color="#9CA3AF" />
-        </TouchableOpacity>
-        {activeMenuId === notification.id && (
-          <View style={styles.dropdownMenu}>
-            {isArchived ? (
-              <TouchableOpacity style={styles.dropdownItem} onPress={() => handleRestoreNotification(notification.id)}>
-                <Ionicons name="refresh-outline" size={16} color="#10B981" />
-                <Text style={[styles.dropdownText, { color: "#10B981" }]}>Restore</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity style={styles.dropdownItem} onPress={() => handleArchiveNotification(notification.id)}>
-                <Ionicons name="archive-outline" size={16} color="#6B7280" />
-                <Text style={styles.dropdownText}>Archive</Text>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity style={styles.dropdownItem} onPress={() => handleDeleteNotification(notification.id)}>
-              <Ionicons name="trash-outline" size={16} color="#EF4444" />
-              <Text style={[styles.dropdownText, { color: "#EF4444" }]}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
-
-      <Text style={styles.notificationTitle}>{notification.title}</Text>
-
-      {notification.department && (
-        <View style={styles.notificationDetails}>
-          <Text style={styles.detailText}>Location: {notification.location}</Text>
-          <Text style={styles.detailText}>Department: {notification.department}</Text>
-          {notification.reportedBy && <Text style={styles.detailText}>Reported by: {notification.reportedBy}</Text>}
-        </View>
-      )}
-
-      {notification.assignedTo && (
-        <View style={styles.assignedSection}>
-          <Text style={styles.assignedLabel}>Assigned to: </Text>
-          <Text style={styles.assignedValue}>{notification.assignedTo}</Text>
-        </View>
-      )}
-
-      <View style={styles.notificationFooter}>
-        <Text style={styles.timeText}>
-          {notification.time} {notification.timeAgo && `(${notification.timeAgo})`}
-        </Text>
-        <Text style={styles.tapHint}>Tap for details</Text>
-      </View>
-    </TouchableOpacity>
-  )
-
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1B2560" translucent={false} hidden={false} />
@@ -326,7 +64,19 @@ export default function ProfileScreen() {
       <ScrollView style={styles.content}>
         <View style={styles.profileCard}>
           <View style={styles.avatarWrapper}>
-            <Ionicons name="person" size={80} color="#3B82F6" />
+            {!!profile.profile_picture_filename ? (
+              // <Text>Has Image</Text>
+              <Image
+                style={{ flex: 1, width: '100%', height: '100%', backgroundColor: '#FFF', borderRadius: '50%', overflow: 'hidden' }}
+                source={baseURL + '/storage/' + profile.profile_picture_filename}
+                contentFit="cover"
+                cachePolicy="disk"
+                
+              />
+              
+            ) : (
+              <Ionicons name="person" size={80} color="#3B82F6" />
+            )}
           </View>
           <Text style={styles.userName}>{profile.first_name} {profile.surname.charAt(0).toUpperCase()}.</Text>
           <Text style={styles.userRole}>{profile.position ?? 'CDRRMO Personnel'}</Text>
@@ -358,7 +108,7 @@ export default function ProfileScreen() {
         </View>
       </ScrollView>
 
-      {/* Notifications Modal */}
+      {/* Notifications Modal
       <Modal
         animationType="slide"
         transparent={false}
@@ -450,9 +200,9 @@ export default function ProfileScreen() {
             </View>
           </SafeAreaView>
         </View>
-      </Modal>
+      </Modal> */}
 
-      {/* Notification Detail Modal */}
+      {/* Notification Detail Modal
       {selectedNotification && (
         <Modal
           animationType="slide"
@@ -599,9 +349,9 @@ export default function ProfileScreen() {
             </SafeAreaView>
           </View>
         </Modal>
-      )}
+      )} */}
 
-      {/* Photo Options Modal */}
+      {/* Photo Options Modal
       {showPhotoOptions && (
         <View style={styles.photoOptionsOverlay}>
           <TouchableOpacity style={styles.photoOptionsBackdrop} onPress={() => setShowPhotoOptions(false)} />
@@ -623,7 +373,7 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           </View>
         </View>
-      )}
+      )} */}
     </View>
   )
 }
@@ -722,13 +472,16 @@ const styles = StyleSheet.create({
   },
   avatarWrapper: {
     position: "relative",
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
     backgroundColor: "#E5E7EB",
     justifyContent: "center",
     alignItems: "center",
-    overflow: "visible",
+    overflow: "hidden",
+    borderWidth: 5,
+    borderColor: '#1B2560',
+    borderStyle: 'solid',
   },
   cameraIconContainer: {
     position: "absolute",
