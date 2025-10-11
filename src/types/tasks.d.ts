@@ -1,3 +1,5 @@
+import { User } from ".";
+
 export interface Task {
   id: number;
   title: string;
@@ -16,6 +18,10 @@ export interface Task {
 
   type: TaskType;
   priority: TaskPriority;
+
+  due_date: string;
+
+  creator: User;
 }
 
 export interface TaskType {

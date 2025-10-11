@@ -6,6 +6,7 @@ import api from "@/lib/api"
 import { Task } from "@/types/tasks"
 import { ConsumableItem, ConsumableTransaction, EquipmentItem, EquipmentTransaction, Transaction } from "@/types/transaction"
 import { Ionicons } from "@expo/vector-icons"
+import dayjs from "dayjs"
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
 import { useCallback, useEffect, useState } from "react"
 import {
@@ -145,17 +146,11 @@ export default function TasksScreen() {
             <View style={styles.quickInfoItem}>
               <Ionicons name="time" size={20} color="#1B2560" />
               <View style={styles.quickInfoContent}>
-                <Text style={styles.quickInfoLabel}>Time</Text>
-                <Text style={styles.quickInfoValue}>TIME AGO</Text>
+                <Text style={styles.quickInfoLabel}>Due Date</Text>
+                <Text style={styles.quickInfoValue}>{dayjs(task.due_date).format("MMMM DD, YYYY hh:mm A")}</Text>
               </View>
             </View>
-            <View style={styles.quickInfoItem}>
-              <Ionicons name="person" size={20} color="#10B981" />
-              <View style={styles.quickInfoContent}>
-                <Text style={styles.quickInfoLabel}>Assigned To</Text>
-                <Text style={styles.quickInfoValue}>ME</Text>
-              </View>
-            </View>
+            
           </View>
 
           {/* Description Section */}
@@ -179,15 +174,15 @@ export default function TasksScreen() {
             </View>
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Reported By:</Text>
-              <Text style={styles.detailValue}>CREATOR</Text>
+              <Text style={styles.detailValue}>{task.creator.first_name} {task.creator.surname.charAt(0)}.</Text>
             </View>
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Status:</Text>
-              <Text style={styles.detailValue}>STATUS</Text>
+              <Text style={styles.detailValue}>{!!task.finished_at ? 'FINISHED' : 'ONGOING'}</Text>
             </View>
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Due Date:</Text>
-              <Text style={styles.detailValue}>DUE DATE</Text>
+              <Text style={styles.detailLabel}>Created AT:</Text>
+              <Text style={styles.detailValue}>{dayjs(task.created_at).format("MM/DD/YYYY hh:mm A")}</Text>
             </View>
           </View>
 

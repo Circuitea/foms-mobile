@@ -3,6 +3,8 @@ import { STORE_EXPO_PUSH_TOKEN_KEY, TASK_GET_LOCATION } from "@/lib/constants";
 import { registerForPushNotificationsAsync } from "@/lib/notifications";
 import { ProfileProvider, useProfileDispatch } from "@/providers/ProfileProvider";
 import NetInfo from '@react-native-community/netinfo';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { LinearGradient } from "expo-linear-gradient";
 import { LocationObject, stopLocationUpdatesAsync } from "expo-location";
 import * as Notifications from 'expo-notifications';
@@ -13,6 +15,8 @@ import * as TaskManager from 'expo-task-manager';
 import { useEffect } from "react";
 import { ImageBackground } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+dayjs.extend(relativeTime);
 
 TaskManager.defineTask<{ locations: LocationObject[] }>(TASK_GET_LOCATION, async ({ data: { locations }, error }) => {
   if (error) {
