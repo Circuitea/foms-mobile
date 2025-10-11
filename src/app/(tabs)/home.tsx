@@ -433,7 +433,7 @@ export default function HomeScreen() {
             <View style={styles.separator} />
           </View>
 
-          {/* Enhanced Personnel Tracking Section */}
+          {/* Enhanced Personnel Tracking Section
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Ionicons name="people-outline" size={20} color="#1B2560" />
@@ -472,9 +472,9 @@ export default function HomeScreen() {
                 <Text style={styles.metricValue}>4</Text>
               </View>
             </View>
-          </View>
+          </View> */}
 
-          {/* Enhanced Map Section */}
+          {/* Enhanced Map Section
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Ionicons name="map-outline" size={20} color="#1B2560" />
@@ -503,7 +503,7 @@ export default function HomeScreen() {
                 </View>
               </View>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           {/* Enhanced Active Tasks Section */}
           <View style={styles.section}>
