@@ -3,10 +3,12 @@
 import api from "@/lib/api"
 import { useProfile, useProfileDispatch } from "@/providers/ProfileProvider"
 import { Status } from "@/types"
+import { Task } from "@/types/tasks"
 import { Ionicons } from "@expo/vector-icons"
 import { useFocusEffect } from "@react-navigation/native"
+import dayjs from "dayjs"
 import { useRouter } from "expo-router"
-import { useCallback, useRef } from "react"
+import { useCallback, useRef, useState } from "react"
 import {
   Platform,
   ScrollView,
@@ -17,32 +19,25 @@ import {
   View
 } from "react-native"
 
-interface TaskData {
-  id: string
-  type: "URGENT" | "NORMAL" | "HIGH"
-  category: string
-  title: string
-  description: string
-  location: string
-  assignedTo: string
-  time: string
-  status: string
-  dueDate: string
-  isRead: boolean
-  taskId: string
-  department: string
-  reportedBy: string
-}
-
 export default function HomeScreen() {
   const router = useRouter()
   const scrollViewRef = useRef<ScrollView>(null)
   const profile = useProfile();
   const profileDispatch = useProfileDispatch();
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
+
 
   // Reset scroll position when screen comes into focus
   useFocusEffect(
     useCallback(() => {
+      async function getActiveTask() {
+        const response = await api.get<{ task: Task }>('/active-task');
+
+        if (response.status === 200) {
+          setActiveTask(response.data.task);
+        }
+      }
+
       async function updateStatus() {
         const response = await api.get<{ status: Status }>('/status');
         
@@ -53,6 +48,7 @@ export default function HomeScreen() {
 
       scrollViewRef.current?.scrollTo({ y: 0, animated: false })
 
+      getActiveTask();
       updateStatus();
       
       const interval = setInterval(updateStatus, 5000);
@@ -86,7 +82,7 @@ export default function HomeScreen() {
         >
           {/* Enhanced Greeting Section */}
           <View style={styles.greetingContainer}>
-            <Text style={styles.greeting}>Good Morning, Officer!</Text>
+            <Text style={styles.greeting}>Good Day, {profile.first_name}!</Text>
             <Text style={styles.subGreeting}>Ready to keep our community safe today</Text>
             <View style={styles.separator} />
           </View>
@@ -140,96 +136,59 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* Enhanced Map Section
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Ionicons name="map-outline" size={20} color="#1B2560" />
-              <Text style={styles.sectionTitle}>LIVE TRACKING MAP</Text>
-            </View>
-            <TouchableOpacity style={styles.mapContainer} onPress={handleMapClick} activeOpacity={0.8}>
-              <View style={styles.mapPlaceholder}>
-                <View style={styles.mapIconContainer}>
-                  <Ionicons name="map" size={56} color="#FF4D4D" />
-                </View>
-                <Text style={styles.mapPlaceholderText}>Interactive Personnel Map</Text>
-                <Text style={styles.mapDescription}>Real-time location tracking of all field personnel</Text>
-                {location && (
-                  <View style={styles.currentLocation}>
-                    <View style={styles.locationIcon}>
-                      <Ionicons name="location" size={16} color="#FF4D4D" />
-                    </View>
-                    <Text style={styles.coordinateText}>
-                      Current: {location.coords.latitude.toFixed(6)}, {location.coords.longitude.toFixed(6)}
-                    </Text>
-                  </View>
-                )}
-                <View style={styles.mapActionButton}>
-                  <Text style={styles.mapActionText}>Tap to open full screen</Text>
-                  <Ionicons name="expand-outline" size={16} color="#FFFFFF" />
-                </View>
-              </View>
-            </TouchableOpacity>
-          </View> */}
-
-          {/* Enhanced Active Tasks Section */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Ionicons name="clipboard-outline" size={20} color="#1B2560" />
-              <Text style={styles.sectionTitle}>ACTIVE TASKS</Text>
+              <Text style={styles.sectionTitle}>ACTIVE TASK</Text>
             </View>
 
-            <TouchableOpacity
-              style={styles.taskCard}
-              activeOpacity={0.7}
-            >
-              <View style={styles.taskHeader}>
-                <View style={styles.urgentBadge}>
-                  <Ionicons name="warning" size={12} color="#FFFFFF" />
-                  <Text style={styles.urgentText}>URGENT</Text>
-                </View>
-                <Text style={styles.taskType}>Emergency Response</Text>
-                <View style={styles.statusBadge}>
-                  <View style={styles.statusDot} />
-                  <Text style={styles.statusText}>IN PROGRESS</Text>
-                </View>
-              </View>
-
-              <Text style={styles.taskTitle}>Flood Response - Barangay Greenhills</Text>
-
-              <Text style={styles.taskDescription}>
-                Deploy emergency response team to assist with flood evacuation and rescue operations in Barangay
-                Greenhills.
-              </Text>
-
-              {/* Replace the existing taskFooter section (around lines 580-610) with: */}
-              <View style={styles.taskFooter}>
-                <View style={styles.taskLocation}>
-                  <Ionicons name="location" size={16} color="#FF4D4D" />
-                  <Text style={styles.taskLocationText}>Barangay Greenhills</Text>
+            {!activeTask ? (
+              <Text style={{ textAlign: 'center', paddingVertical: 20 }}>No Active Task</Text>
+            ) : (
+              <TouchableOpacity
+                style={styles.taskCard}
+                activeOpacity={0.7}
+                onPress={() => router.navigate(`/(tabs)/task/${activeTask.id}`)}
+              >
+                <View style={styles.taskHeader}>
+                  <View style={[styles.urgentBadge, activeTask.priority.name !== 'urgent' && {
+                    backgroundColor: '#1B2560',
+                  }]}>
+                    <Ionicons name="warning" size={12} color="#FFFFFF" />
+                    <Text style={styles.urgentText}>{activeTask.priority.name}</Text>
+                  </View>
+                  <Text style={styles.taskType}>{activeTask.type.name}</Text>
                 </View>
 
-                <View style={styles.taskMeta}>
-                  <View>
-                    <Ionicons name="time-outline" size={14} color="#6B7280" />
-                    <Text>6 hours</Text>
+                <Text style={styles.taskTitle}>{activeTask.title}</Text>
+
+                <Text style={styles.taskDescription}>{activeTask.description}</Text>
+
+                {/* Replace the existing taskFooter section (around lines 580-610) with: */}
+                <View style={styles.taskFooter}>
+                  <View style={styles.taskLocation}>
+                    <Ionicons name="location" size={16} color="#FF4D4D" />
+                    <Text style={styles.taskLocationText}>{activeTask.location}</Text>
                   </View>
 
-                  <View>
-                    <Ionicons name="people-outline" size={14} color="#6B7280" />
-                    <Text>1 assigned</Text>
+                  <View style={styles.taskMeta}>
+                    <View>
+                      <Ionicons name="time-outline" size={14} color="#6B7280" />
+                      <Text>Created: {dayjs(activeTask.created_at).format('YYYY/MM/DD - hh:mm A')}</Text>
+                    </View>
+
+                    <View>
+                      <Ionicons name="calendar-outline" size={14} color="#6B7280" />
+                      <Text>Due Date: {dayjs(activeTask.due_date).format('YYYY/MM/DD hh:mm A')}</Text>
+                    </View>
                   </View>
 
-                  <View>
-                    <Ionicons name="calendar-outline" size={14} color="#6B7280" />
-                    <Text>Due: 1/16/2024</Text>
+                  <View style={styles.taskActionContainer}>
+                    <Text style={styles.tapHint}>Tap for details</Text>
                   </View>
                 </View>
-
-                <View style={styles.taskActionContainer}>
-                  <Text style={styles.tapHint}>Tap for details</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            )}
 
             <TouchableOpacity
               style={styles.viewAllButton}
