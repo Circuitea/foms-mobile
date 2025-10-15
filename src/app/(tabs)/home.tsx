@@ -52,6 +52,8 @@ export default function HomeScreen() {
       }
 
       scrollViewRef.current?.scrollTo({ y: 0, animated: false })
+
+      updateStatus();
       
       const interval = setInterval(updateStatus, 5000);
 
