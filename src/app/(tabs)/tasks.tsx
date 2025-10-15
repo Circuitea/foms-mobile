@@ -52,7 +52,6 @@ export default function TasksScreen({ initialTab = "active" }: TasksScreenProps)
       key={task.id}
       style={[styles.taskCard]}
       onPress={() => {
-        console.log(`Navigatin to task details page ${task.id}`)
         router.navigate(`/(tabs)/task/${task.id}`)
       }}
       activeOpacity={0.7}

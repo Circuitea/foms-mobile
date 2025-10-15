@@ -1,13 +1,16 @@
+import { NotificationModal } from "@/components/NotificationModal";
 import { TASK_GET_LOCATION } from "@/lib/constants";
 import { startLocationTracking } from "@/lib/location";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Location from 'expo-location';
 import { Tabs } from "expo-router";
-import { useEffect } from "react";
-import { StatusBar, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function RootLayout() {
+  const [notificationModalOpen, setNotificationModalOpen] = useState(false);
+
 
   useEffect(() => {
     startLocationTracking();
@@ -69,7 +72,13 @@ export default function RootLayout() {
                       </View>
                     </View>
                   </View>
-                  
+                  <View style={styles.headerRight}>
+                    <TouchableOpacity style={styles.notificationButton} onPress={() => setNotificationModalOpen(true)}>
+                      <View style={styles.notificationIconContainer}>
+                        <Ionicons name="notifications" size={20} color="#FFFFFF" />
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </LinearGradient>
 
@@ -78,6 +87,7 @@ export default function RootLayout() {
             </View>
 
             {children}
+            <NotificationModal open={notificationModalOpen} onOpenChange={setNotificationModalOpen} />
           </>
         )}
       >

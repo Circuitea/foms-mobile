@@ -91,7 +91,7 @@ export function TaskStatusModal(props: ModalProps & {
                   )}
             </View>
           </SafeAreaView>
-        </View>
+      </View>
     </Modal>
   );
 }

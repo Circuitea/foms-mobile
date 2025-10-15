@@ -42,6 +42,7 @@ function profileReducer(profile: User | null, action: Action) {
       return action.user;
 
     case 'updateStatus':
+      if (!profile) return null;
       return {
         ...profile,
         status: action.status,
