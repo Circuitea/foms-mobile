@@ -1,52 +1,21 @@
 "use client"
 
+import api from "@/lib/api"
+import { useProfile, useProfileDispatch } from "@/providers/ProfileProvider"
+import { Status } from "@/types"
 import { Ionicons } from "@expo/vector-icons"
 import { useFocusEffect } from "@react-navigation/native"
-import { LinearGradient } from "expo-linear-gradient"
-import {
-  type LocationObject
-} from "expo-location"
 import { useRouter } from "expo-router"
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useRef } from "react"
 import {
-  Alert,
-  Modal,
   Platform,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native"
-
-interface Notification {
-  id: string
-  type: "URGENT" | "NORMAL" | "HIGH"
-  category:
-    | "Team Deployment"
-    | "Meeting Notice"
-    | "Equipment Alert"
-    | "Emergency Response"
-    | "Maintenance"
-    | "Assessment"
-    | "Meeting Reminder"
-  title: string
-  description: string
-  location: string
-  department?: string
-  reportedBy?: string
-  assignedTo?: string
-  assignedCount?: number
-  time: string
-  timeAgo: string
-  status: "Checked" | "Unchecked"
-  taskId?: string
-  dueDate?: string
-  isRead?: boolean
-  archivedAt?: string
-}
 
 interface TaskData {
   id: string
@@ -68,350 +37,37 @@ interface TaskData {
 export default function HomeScreen() {
   const router = useRouter()
   const scrollViewRef = useRef<ScrollView>(null)
-  const [location, setLocation] = useState<LocationObject | null>(null)
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
-  const [isTracking, setIsTracking] = useState(false)
-  const [fullScreenMapVisible, setFullScreenMapVisible] = useState(false)
-  const [selectedTask, setSelectedTask] = useState<TaskData | null>(null)
-  const [taskDetailModalVisible, setTaskDetailModalVisible] = useState(false)
-
-  // Notification states
-  const [notificationsVisible, setNotificationsVisible] = useState(false)
-  const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null)
-  const [notificationDetailVisible, setNotificationDetailVisible] = useState(false)
-  const [activeMenuId, setActiveMenuId] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<"all" | "archived">("all")
-
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: "1",
-      type: "URGENT",
-      category: "Team Deployment",
-      title: "Emergency Response Team Alpha - Deploy to Barangay Greenhills",
-      description:
-        "Deploy emergency response team to assist with flood evacuation and rescue operations in Barangay Greenhills.",
-      location: "Barangay Greenhills",
-      department: "Emergency Operations",
-      reportedBy: "Operations Chief Martinez",
-      assignedTo: "Team Alpha Leader",
-      time: "05:44 PM",
-      timeAgo: "8 minutes ago",
-      status: "Checked",
-      taskId: "SJ-OPS-2025-001",
-      isRead: false,
-    },
-    {
-      id: "2",
-      type: "NORMAL",
-      category: "Meeting Notice",
-      title: "Staff Meeting - Post-Incident Review scheduled for 3:00 PM",
-      description: "Conduct post-incident review meeting to discuss recent emergency response operations.",
-      location: "CDRRMO Conference Room",
-      department: "Administration",
-      reportedBy: "CDRRMO Director",
-      time: "05:07 PM",
-      timeAgo: "45 minutes ago",
-      status: "Checked",
-      isRead: true,
-    },
-    {
-      id: "3",
-      type: "NORMAL",
-      category: "Equipment Alert",
-      title: "Equipment Maintenance - Rescue Vehicle Unit 3",
-      description:
-        "Perform scheduled maintenance on Rescue Vehicle Unit 3 including engine check and equipment inventory.",
-      location: "CDRRMO Motor Pool",
-      department: "Maintenance",
-      reportedBy: "Fleet Manager",
-      time: "04:30 PM",
-      timeAgo: "1 hour ago",
-      status: "Unchecked",
-      taskId: "SJ-MAINT-2025-003",
-      isRead: false,
-    },
-    {
-      id: "7",
-      type: "HIGH",
-      category: "Meeting Reminder",
-      title: "Emergency Response Team Alpha - Monthly Briefing Tomorrow",
-      description:
-        "Monthly briefing for Emergency Response Team Alpha. Review of recent operations, upcoming training schedules, and equipment maintenance. All team members must attend.",
-      location: "CDRRMO Conference Room",
-      department: "Emergency Operations",
-      reportedBy: "Operations Chief Martinez",
-      assignedTo: "Team Alpha Members",
-      time: "02:15 PM",
-      timeAgo: "2 hours ago",
-      status: "Unchecked",
-      taskId: "MTG-2025-001",
-      isRead: false,
-    },
-    {
-      id: "8",
-      type: "NORMAL",
-      category: "Meeting Reminder",
-      title: "Disaster Preparedness Workshop - Community Outreach",
-      description:
-        "Community outreach workshop focusing on disaster preparedness education. Training session will cover basic emergency response and evacuation procedures.",
-      location: "Virtual Meeting",
-      department: "Community Relations",
-      reportedBy: "Community Coordinator Santos",
-      assignedTo: "Training Team",
-      time: "01:30 PM",
-      timeAgo: "3 hours ago",
-      status: "Unchecked",
-      taskId: "MTG-2025-002",
-      isRead: false,
-    },
-  ])
-
-  const [archivedNotifications, setArchivedNotifications] = useState<Notification[]>([])
-
-  const handleRestoreNotification = (notificationId: string) => {
-    const notification = archivedNotifications.find((n) => n.id === notificationId)
-    if (!notification) return
-
-    const { archivedAt, ...restoredItem } = notification
-    setNotifications((prev) => [restoredItem, ...prev])
-    setArchivedNotifications((prev) => prev.filter((item) => item.id !== notificationId))
-    setActiveMenuId(null)
-    Alert.alert("Restored", "Notification has been restored to main list.")
-  }
+  const profile = useProfile();
+  const profileDispatch = useProfileDispatch();
 
   // Reset scroll position when screen comes into focus
   useFocusEffect(
     useCallback(() => {
+      async function updateStatus() {
+        const response = await api.get<{ status: Status }>('/status');
+        
+        if (response.status === 200) {
+          profileDispatch({ type: 'updateStatus', status: response.data.status });
+        }
+      }
+
       scrollViewRef.current?.scrollTo({ y: 0, animated: false })
-      // Reset any active states
-      setFullScreenMapVisible(false)
-      setTaskDetailModalVisible(false)
-      setSelectedTask(null)
-      setNotificationsVisible(false)
-      setNotificationDetailVisible(false)
-      setSelectedNotification(null)
-      setActiveMenuId(null)
+      
+      const interval = setInterval(updateStatus, 5000);
+
+      return () => {
+        clearInterval(interval);
+      }
+
     }, []),
   )
 
-  // useEffect(() => {
-  //   async function sendLocationToServer(currentLocation: LocationObject) {
-  //     try {
-  //       await api.fetchWithAuth('/api/location', {
-  //         method: 'POST',
-  //         body: JSON.stringify({
-  //           latitude: currentLocation.coords.latitude,
-  //           longitude: currentLocation.coords.longitude,
-  //           timestamp: new Date().toISOString(),
-  //         }),
-  //       });
-  //     } catch (error) {
-  //       console.error('Location update failed:', error);
-  //     }
-  //   };
+  async function changeStatus(status: Status) {
+    const response = await api.post<{ status: Status }>('/status', { status });
 
-  //   async function getCurrentLocation() {
-  //     const { status } = await requestForegroundPermissionsAsync()
-  //     if (status !== "granted") {
-  //       setErrorMsg("Permission to access location was denied")
-  //       return
-  //     }
-
-  //     setIsTracking(true)
-  //     return watchPositionAsync(
-  //       {
-  //         accuracy: Accuracy.Highest,
-  //         timeInterval: 5000,
-  //         distanceInterval: 1,
-  //       },
-  //       (fetchedLocation) => {
-  //         setLocation(fetchedLocation)
-  //         sendLocationToServer(fetchedLocation)
-  //       },
-  //     )
-  //   }
-
-  //   let watch: LocationSubscription | undefined
-  //   getCurrentLocation().then((locationSubscription) => {
-  //     watch = locationSubscription
-  //   });
-
-  //   scheduleNotificationAsync({
-  //     content: {
-  //       title: 'Test',
-  //       body: 'Test Notification',
-  //     },
-  //     trigger: null,
-  //   });
-
-  //   return () => {
-  //     if (watch) {
-  //       watch.remove()
-  //     }
-  //     setIsTracking(false)
-  //   }
-  // }, [])
-
-  const getUnreadNotificationsCount = () => {
-    return notifications.filter((n) => !n.isRead).length
-  }
-
-  const handleNotificationClick = (notification: Notification) => {
-    // Mark notification as read when clicked
-    if (!notification.isRead) {
-      setNotifications((prev) => prev.map((n) => (n.id === notification.id ? { ...n, isRead: true } : n)))
+    if (response.status === 200) {
+      profileDispatch({ type: 'updateStatus' , status: response.data.status});
     }
-
-    setSelectedNotification({ ...notification, isRead: true })
-    setNotificationDetailVisible(true)
-  }
-
-  const handleArchiveNotification = (notificationId: string) => {
-    const notification = notifications.find((n) => n.id === notificationId)
-    if (!notification) return
-
-    const archivedItem = {
-      ...notification,
-      archivedAt: new Date().toLocaleString(),
-    }
-
-    // Add to archived items
-    setArchivedNotifications((prev) => [archivedItem, ...prev])
-
-    // Remove from notifications list
-    setNotifications((prev) => prev.filter((item) => item.id !== notificationId))
-
-    setActiveMenuId(null)
-    Alert.alert("Archived", "Notification has been moved to archived section.")
-  }
-
-  const handleDeleteNotification = (notificationId: string) => {
-    Alert.alert("Delete Notification", "Are you sure you want to permanently delete this notification?", [
-      { text: "Cancel", style: "cancel", onPress: () => setActiveMenuId(null) },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: () => {
-          setNotifications((prev) => prev.filter((item) => item.id !== notificationId))
-          setActiveMenuId(null)
-          Alert.alert("Deleted", "Notification has been permanently deleted.")
-        },
-      },
-    ])
-  }
-
-  const handleMarkAllAsRead = () => {
-    const unreadCount = getUnreadNotificationsCount()
-
-    if (unreadCount === 0) {
-      Alert.alert("Mark All as Read", "All notifications are already marked as read.")
-      return
-    }
-
-    Alert.alert("Mark All as Read", `Mark all ${unreadCount} unread notifications as read?`, [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Mark All as Read",
-        onPress: () => {
-          setNotifications((prev) => prev.map((notification) => ({ ...notification, isRead: true })))
-        },
-      },
-    ])
-  }
-
-  const renderNotification = (notification: Notification, isArchived = false) => (
-    <TouchableOpacity
-      key={notification.id}
-      style={[styles.notificationCard, !notification.isRead && styles.unreadCard]}
-      onPress={() => handleNotificationClick(notification)}
-      activeOpacity={0.7}
-    >
-      <View style={styles.notificationHeader}>
-        <View style={styles.notificationLeft}>
-          <View style={[styles.statusIndicator, { backgroundColor: notification.isRead ? "#9CA3AF" : "#FF4D4D" }]} />
-          <View
-            style={[
-              styles.typeBadge,
-              {
-                backgroundColor:
-                  notification.type === "URGENT" ? "#FF4D4D" : notification.type === "HIGH" ? "#F59E0B" : "#1B2560",
-              },
-            ]}
-          >
-            <Text style={styles.typeText}>{notification.type}</Text>
-          </View>
-          <View style={styles.categoryBadge}>
-            <Ionicons
-              name={
-                notification.category === "Team Deployment"
-                  ? "people"
-                  : notification.category === "Meeting Notice" || notification.category === "Meeting Reminder"
-                    ? "calendar"
-                    : "construct"
-              }
-              size={16}
-              color="#6B7280"
-            />
-            <Text style={styles.categoryText}>{notification.category}</Text>
-          </View>
-          {notification.taskId && <Text style={styles.taskId}>{notification.taskId}</Text>}
-        </View>
-        <TouchableOpacity onPress={() => setActiveMenuId(activeMenuId === notification.id ? null : notification.id)}>
-          <Ionicons name="ellipsis-vertical" size={20} color="#9CA3AF" />
-        </TouchableOpacity>
-        {activeMenuId === notification.id && (
-          <View style={styles.dropdownMenu}>
-            {isArchived ? (
-              <TouchableOpacity style={styles.dropdownItem} onPress={() => handleRestoreNotification(notification.id)}>
-                <Ionicons name="refresh-outline" size={16} color="#10B981" />
-                <Text style={[styles.dropdownText, { color: "#10B981" }]}>Restore</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity style={styles.dropdownItem} onPress={() => handleArchiveNotification(notification.id)}>
-                <Ionicons name="archive-outline" size={16} color="#6B7280" />
-                <Text style={styles.dropdownText}>Archive</Text>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity style={styles.dropdownItem} onPress={() => handleDeleteNotification(notification.id)}>
-              <Ionicons name="trash-outline" size={16} color="#FF4D4D" />
-              <Text style={[styles.dropdownText, { color: "#FF4D4D" }]}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
-
-      <Text style={styles.notificationTitle}>{notification.title}</Text>
-
-      {notification.department && (
-        <View style={styles.notificationDetails}>
-          <Text style={styles.detailText}>Location: {notification.location}</Text>
-          <Text style={styles.detailText}>Department: {notification.department}</Text>
-          {notification.reportedBy && <Text style={styles.detailText}>Reported by: {notification.reportedBy}</Text>}
-        </View>
-      )}
-
-      {notification.assignedTo && (
-        <View style={styles.assignedSection}>
-          <Text style={styles.assignedLabel}>Assigned to: </Text>
-          <Text style={styles.assignedValue}>{notification.assignedTo}</Text>
-        </View>
-      )}
-
-      <View style={styles.notificationFooter}>
-        <Text style={styles.timeText}>
-          {notification.time} {notification.timeAgo && `(${notification.timeAgo})`}
-        </Text>
-        <Text style={styles.tapHint}>Tap for details</Text>
-      </View>
-    </TouchableOpacity>
-  )
-
-  const handleMapClick = () => {
-    setFullScreenMapVisible(true)
-  }
-
-  const handleBackFromFullScreen = () => {
-    setFullScreenMapVisible(false)
   }
 
   return (
@@ -433,46 +89,54 @@ export default function HomeScreen() {
             <View style={styles.separator} />
           </View>
 
-          {/* Enhanced Personnel Tracking Section
+          {/* Enhanced Personnel Tracking Section */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Ionicons name="people-outline" size={20} color="#1B2560" />
-              <Text style={styles.sectionTitle}>PERSONNEL TRACKING</Text>
+              <Text style={styles.sectionTitle}>Status</Text>
             </View>
             <View style={styles.metricsGrid}>
-              <View style={[styles.metricCard, styles.totalStaffCard]}>
-                <View style={[styles.iconContainer, { backgroundColor: "#1B2560" }]}>
-                  <Ionicons name="people" size={16} color="white" />
-                </View>
-                <Text style={styles.metricLabel}>Total Staff</Text>
-                <Text style={styles.metricValue}>10</Text>
-              </View>
-
-              <View style={[styles.metricCard, styles.activeCard]}>
+              <TouchableOpacity
+                style={[styles.metricCard, profile.status === 'available' && { backgroundColor: '#10B981' }]}
+                onPress={() => changeStatus('available')}
+              >
                 <View style={[styles.iconContainer, { backgroundColor: "#10B981" }]}>
                   <Ionicons name="checkmark-circle" size={16} color="white" />
                 </View>
-                <Text style={styles.metricLabel}>Active</Text>
-                <Text style={styles.metricValue}>5</Text>
-              </View>
+                <Text style={[styles.metricLabel, profile.status === 'available' && { color: 'white' }]}>Available</Text>
+              </TouchableOpacity>
 
-              <View style={[styles.metricCard, styles.onDutyCard]}>
+              <TouchableOpacity
+                style={[styles.metricCard, profile.status === 'on break' && { backgroundColor: '#F59E0B' }]}
+                onPress={() => changeStatus('on break')}
+              >
                 <View style={[styles.iconContainer, { backgroundColor: "#F59E0B" }]}>
+                  <Ionicons name="cafe" size={16} color="white" />
+                </View>
+                <Text style={[styles.metricLabel, profile.status === 'on break' && { color: 'white' }]}>On Break</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.metricCard, profile.status === 'unavailable' &&  { backgroundColor: '#525252' }]}
+                onPress={() => changeStatus('unavailable')}
+              >
+                <View style={[styles.iconContainer, { backgroundColor: "#525252" }]}>
                   <Ionicons name="time" size={16} color="white" />
                 </View>
-                <Text style={styles.metricLabel}>On Duty</Text>
-                <Text style={styles.metricValue}>5</Text>
-              </View>
+                <Text style={[styles.metricLabel, profile.status === 'unavailable' && { color: 'white' }]}>Off Duty</Text>
+              </TouchableOpacity>
 
-              <View style={[styles.metricCard, styles.onSiteCard]}>
+              <TouchableOpacity
+                style={[styles.metricCard, profile.status === 'emergency' && { backgroundColor: '#FF4D4D' }]}
+                onPress={() => changeStatus('emergency')}
+              >
                 <View style={[styles.iconContainer, { backgroundColor: "#FF4D4D" }]}>
-                  <Ionicons name="location" size={16} color="white" />
+                  <Ionicons name="warning" size={16} color="white" />
                 </View>
-                <Text style={styles.metricLabel}>On-site</Text>
-                <Text style={styles.metricValue}>4</Text>
-              </View>
+                <Text style={[styles.metricLabel, profile.status === 'emergency' && { color: 'white' }]}>Emergency</Text>
+              </TouchableOpacity>
             </View>
-          </View> */}
+          </View>
 
           {/* Enhanced Map Section
           <View style={styles.section}>
@@ -514,27 +178,6 @@ export default function HomeScreen() {
 
             <TouchableOpacity
               style={styles.taskCard}
-              onPress={() => {
-                const taskData: TaskData = {
-                  id: "4",
-                  type: "URGENT",
-                  category: "Emergency Response",
-                  title: "Flood Response - Barangay Greenhills",
-                  description:
-                    "Deploy emergency response team to assist with flood evacuation and rescue operations in Barangay Greenhills.",
-                  location: "Barangay Greenhills",
-                  assignedTo: "Officer Alexis",
-                  time: "6 hours",
-                  status: "Unchecked",
-                  dueDate: "1/16/2024",
-                  isRead: true,
-                  taskId: "SJ-OPS-2025-001",
-                  department: "Emergency Operations",
-                  reportedBy: "Operations Chief Martinez",
-                }
-                setSelectedTask(taskData)
-                setTaskDetailModalVisible(true)
-              }}
               activeOpacity={0.7}
             >
               <View style={styles.taskHeader}>
@@ -599,487 +242,6 @@ export default function HomeScreen() {
           </View>
         </ScrollView>
       </View>
-
-      {/* Notifications Modal with Updated Colors */}
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={notificationsVisible}
-        onRequestClose={() => setNotificationsVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
-          <SafeAreaView style={styles.modalSafeArea}>
-            {/* Header with updated gradient */}
-            <View style={styles.notificationModalHeaderContainer}>
-              <LinearGradient
-                colors={["#1B2560", "#FF4D4D"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.notificationModalHeaderGradient}
-              >
-                <View style={styles.notificationModalHeader}>
-                  <TouchableOpacity style={styles.backButton} onPress={() => setNotificationsVisible(false)}>
-                    <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-                  </TouchableOpacity>
-                  <Text style={styles.modalHeaderTitle}>Notifications</Text>
-                  <View style={styles.headerSpacer} />
-                </View>
-              </LinearGradient>
-              <View style={styles.notificationModalCurvedBottom} />
-            </View>
-
-            <View style={styles.tabContainer}>
-              <TouchableOpacity
-                style={[styles.tab, activeTab === "all" && styles.activeTab]}
-                onPress={() => setActiveTab("all")}
-              >
-                <Ionicons name="notifications-outline" size={20} color={activeTab === "all" ? "#1B2560" : "#6B7280"} />
-                <Text style={[styles.tabText, activeTab === "all" && styles.activeTabText]}>
-                  All ({notifications.length})
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.tab, activeTab === "archived" && styles.activeTab]}
-                onPress={() => setActiveTab("archived")}
-              >
-                <Ionicons name="archive-outline" size={20} color={activeTab === "archived" ? "#1B2560" : "#6B7280"} />
-                <Text style={[styles.tabText, activeTab === "archived" && styles.activeTabText]}>
-                  Archived ({archivedNotifications.length})
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            {activeTab === "all" && (
-              <View style={styles.sectionHeaderContainer}>
-                <View style={styles.sectionHeaderRow}>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Ionicons name="notifications-outline" size={20} color="#1B2560" style={{ marginRight: 6 }} />
-                    <Text style={styles.sectionTitle}>All Notifications</Text>
-                  </View>
-
-                  {notifications.length > 0 && (
-                    <TouchableOpacity style={styles.markAllButton} onPress={handleMarkAllAsRead}>
-                      <Ionicons name="checkmark-done" size={16} color="#1B2560" />
-                      <Text style={styles.markAllButtonText}>Mark All as Read</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-            )}
-
-            <View style={styles.notificationModalContent}>
-              <TouchableOpacity activeOpacity={1} onPress={() => setActiveMenuId(null)} style={{ flex: 1 }}>
-                <ScrollView
-                  style={styles.notificationScrollView}
-                  contentContainerStyle={styles.notificationScrollContent}
-                  showsVerticalScrollIndicator={false}
-                >
-                  {activeTab === "all" ? (
-                    notifications.length === 0 ? (
-                      <View style={styles.emptyState}>
-                        <Ionicons name="notifications-off" size={64} color="#9CA3AF" />
-                        <Text style={styles.emptyStateTitle}>No Notifications</Text>
-                        <Text style={styles.emptyStateText}>You're all caught up!</Text>
-                      </View>
-                    ) : (
-                      notifications.map((notification) => renderNotification(notification, false))
-                    )
-                  ) : archivedNotifications.length === 0 ? (
-                    <View style={styles.emptyState}>
-                      <Ionicons name="archive" size={64} color="#9CA3AF" />
-                      <Text style={styles.emptyStateTitle}>No Archived Notifications</Text>
-                      <Text style={styles.emptyStateText}>Archived notifications will appear here</Text>
-                    </View>
-                  ) : (
-                    archivedNotifications.map((notification) => renderNotification(notification, true))
-                  )}
-                </ScrollView>
-              </TouchableOpacity>
-            </View>
-          </SafeAreaView>
-        </View>
-      </Modal>
-
-      {/* Notification Detail Modal with Updated Colors */}
-      {selectedNotification && (
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={notificationDetailVisible}
-          onRequestClose={() => setNotificationDetailVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
-            <SafeAreaView style={styles.modalSafeArea}>
-              <LinearGradient
-                colors={["#1B2560", "#FF4D4D"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.modalHeader}
-              >
-                <TouchableOpacity style={styles.backButton} onPress={() => setNotificationDetailVisible(false)}>
-                  <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-                </TouchableOpacity>
-                <Text style={styles.modalHeaderTitle}>Notification Details</Text>
-                <View style={styles.headerSpacer} />
-              </LinearGradient>
-
-              <ScrollView
-                style={styles.modalContent}
-                contentContainerStyle={styles.modalScrollContent}
-                showsVerticalScrollIndicator={false}
-              >
-                {!selectedNotification.archivedAt ? (
-                  <TouchableOpacity
-                    style={styles.archiveButton}
-                    onPress={() => {
-                      handleArchiveNotification(selectedNotification.id)
-                      setNotificationDetailVisible(false)
-                    }}
-                  >
-                    <Ionicons name="archive" size={20} color="#FFFFFF" />
-                    <Text style={styles.archiveButtonText}>Archive</Text>
-                  </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity
-                    style={styles.restoreButton}
-                    onPress={() => {
-                      handleRestoreNotification(selectedNotification.id)
-                      setNotificationDetailVisible(false)
-                    }}
-                  >
-                    <Ionicons name="refresh" size={20} color="#FFFFFF" />
-                    <Text style={styles.restoreButtonText}>Restore</Text>
-                  </TouchableOpacity>
-                )}
-
-                {/* Main Info Card */}
-                <View style={styles.mainInfoCard}>
-                  <View style={styles.badgeRow}>
-                    <View
-                      style={[
-                        styles.priorityBadge,
-                        {
-                          backgroundColor:
-                            selectedNotification.type === "URGENT"
-                              ? "#FF4D4D"
-                              : selectedNotification.type === "HIGH"
-                                ? "#F59E0B"
-                                : "#1B2560",
-                        },
-                      ]}
-                    >
-                      <Text style={styles.priorityText}>{selectedNotification.type}</Text>
-                    </View>
-                    <View style={styles.categoryBadgeDetail}>
-                      <Text style={styles.categoryTextDetail}>{selectedNotification.category}</Text>
-                    </View>
-                  </View>
-                  <Text style={styles.detailTitle}>{selectedNotification.title}</Text>
-                  <View style={styles.readStatusRow}>
-                    <View
-                      style={[
-                        styles.readStatusDot,
-                        { backgroundColor: selectedNotification.isRead ? "#10B981" : "#F59E0B" },
-                      ]}
-                    />
-                    <Text style={styles.readStatusText}>{selectedNotification.isRead ? "Read" : "Unread"}</Text>
-                  </View>
-                </View>
-
-                {/* Quick Info Grid */}
-                <View style={styles.quickInfoGrid}>
-                  <View style={styles.quickInfoItem}>
-                    <Ionicons name="location" size={20} color="#FF4D4D" />
-                    <View style={styles.quickInfoContent}>
-                      <Text style={styles.quickInfoLabel}>Location</Text>
-                      <Text style={styles.quickInfoValue}>{selectedNotification.location}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.quickInfoItem}>
-                    <Ionicons name="time" size={20} color="#1B2560" />
-                    <View style={styles.quickInfoContent}>
-                      <Text style={styles.quickInfoLabel}>Time</Text>
-                      <Text style={styles.quickInfoValue}>{selectedNotification.time}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.quickInfoItem}>
-                    <Ionicons name="person" size={20} color="#10B981" />
-                    <View style={styles.quickInfoContent}>
-                      <Text style={styles.quickInfoLabel}>Assigned To</Text>
-                      <Text style={styles.quickInfoValue}>{selectedNotification.assignedTo || "N/A"}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.quickInfoItem}>
-                    <Ionicons name="business" size={20} color="#8B5CF6" />
-                    <View style={styles.quickInfoContent}>
-                      <Text style={styles.quickInfoLabel}>Department</Text>
-                      <Text style={styles.quickInfoValue}>{selectedNotification.department || "N/A"}</Text>
-                    </View>
-                  </View>
-                </View>
-
-                {/* Description Section */}
-                <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeaderRow}>
-                    <Ionicons name="document-text" size={20} color="#1B2560" />
-                    <Text style={styles.sectionTitle}>Description</Text>
-                  </View>
-                  <Text style={styles.descriptionText}>{selectedNotification.description}</Text>
-                </View>
-
-                {/* Additional Details */}
-                <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeaderRow}>
-                    <Ionicons name="information-circle" size={20} color="#1B2560" />
-                    <Text style={styles.sectionTitle}>Additional Information</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Task ID:</Text>
-                    <Text style={styles.detailValue}>{selectedNotification.taskId || "N/A"}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Reported By:</Text>
-                    <Text style={styles.detailValue}>{selectedNotification.reportedBy || "N/A"}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Status:</Text>
-                    <Text style={styles.detailValue}>{selectedNotification.status}</Text>
-                  </View>
-                </View>
-              </ScrollView>
-            </SafeAreaView>
-          </View>
-        </Modal>
-      )}
-
-      {/* Full Screen Map Modal with Updated Colors */}
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={fullScreenMapVisible}
-        onRequestClose={handleBackFromFullScreen}
-      >
-        <View style={styles.fullScreenContainer}>
-          <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
-          <SafeAreaView style={styles.fullScreenSafeArea}>
-            <View style={styles.fullScreenHeaderContainer}>
-              <LinearGradient
-                colors={["#1B2560", "#FF4D4D"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.fullScreenHeaderGradient}
-              >
-                <View style={styles.fullScreenHeader}>
-                  <TouchableOpacity style={styles.backButton} onPress={handleBackFromFullScreen}>
-                    <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-                  </TouchableOpacity>
-                  <Text style={styles.fullScreenTitle}>Interactive Map</Text>
-                  <View style={styles.headerSpacer} />
-                </View>
-              </LinearGradient>
-              <View style={styles.fullScreenCurvedBottom} />
-            </View>
-
-            <View style={styles.fullScreenMapContainer}>
-              <View style={styles.fullScreenMapPlaceholder}>
-                <Ionicons name="map" size={80} color="#FF4D4D" />
-                <Text style={styles.fullScreenMapText}>Full Screen Map</Text>
-                {location && (
-                  <View style={styles.fullScreenCurrentLocation}>
-                    <Text style={styles.fullScreenCoordinateText}>
-                      Current: {location.coords.latitude.toFixed(6)}, {location.coords.longitude.toFixed(6)}
-                    </Text>
-                    {isTracking && (
-                      <View style={styles.trackingIndicator}>
-                        <View style={styles.trackingDot} />
-                        <Text style={styles.trackingText}>Live Tracking</Text>
-                      </View>
-                    )}
-                  </View>
-                )}
-              </View>
-            </View>
-          </SafeAreaView>
-        </View>
-      </Modal>
-
-      {/* Task Detail Modal with Updated Colors */}
-      {selectedTask && (
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={taskDetailModalVisible}
-          onRequestClose={() => setTaskDetailModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <StatusBar barStyle="light-content" backgroundColor="#1B2560" />
-            <SafeAreaView style={styles.modalSafeArea}>
-              <LinearGradient
-                colors={["#1B2560", "#FF4D4D"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.modalHeader}
-              >
-                <TouchableOpacity style={styles.backButton} onPress={() => setTaskDetailModalVisible(false)}>
-                  <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-                </TouchableOpacity>
-                <Text style={styles.modalHeaderTitle}>Task Details</Text>
-                <View style={styles.headerSpacer} />
-              </LinearGradient>
-
-              <ScrollView
-                style={styles.modalContent}
-                contentContainerStyle={styles.modalScrollContent}
-                showsVerticalScrollIndicator={false}
-              >
-                {/* Main Info Card */}
-                <View style={styles.mainInfoCard}>
-                  <View style={styles.badgeRow}>
-                    <View style={[styles.priorityBadge, { backgroundColor: "#FF4D4D" }]}>
-                      <Text style={styles.priorityText}>URGENT</Text>
-                    </View>
-                    <View style={styles.categoryBadgeDetail}>
-                      <Text style={styles.categoryTextDetail}>Emergency Response</Text>
-                    </View>
-                  </View>
-                  <Text style={styles.detailTitle}>{selectedTask.title}</Text>
-                  <View style={styles.readStatusRow}>
-                    <View style={[styles.readStatusDot, { backgroundColor: "#10B981" }]} />
-                    <Text style={styles.readStatusText}>Read</Text>
-                  </View>
-                </View>
-
-                {/* Quick Info Grid */}
-                <View style={styles.quickInfoGrid}>
-                  <View style={styles.quickInfoItem}>
-                    <Ionicons name="location" size={20} color="#FF4D4D" />
-                    <View style={styles.quickInfoContent}>
-                      <Text style={styles.quickInfoLabel}>Location</Text>
-                      <Text style={styles.quickInfoValue}>{selectedTask.location}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.quickInfoItem}>
-                    <Ionicons name="time" size={20} color="#1B2560" />
-                    <View style={styles.quickInfoContent}>
-                      <Text style={styles.quickInfoLabel}>Duration</Text>
-                      <Text style={styles.quickInfoValue}>{selectedTask.time}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.quickInfoItem}>
-                    <Ionicons name="person" size={20} color="#10B981" />
-                    <View style={styles.quickInfoContent}>
-                      <Text style={styles.quickInfoLabel}>Assigned To</Text>
-                      <Text style={styles.quickInfoValue}>{selectedTask.assignedTo}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.quickInfoItem}>
-                    <Ionicons name="calendar" size={20} color="#8B5CF6" />
-                    <View style={styles.quickInfoContent}>
-                      <Text style={styles.quickInfoLabel}>Due Date</Text>
-                      <Text style={styles.quickInfoValue}>{selectedTask.dueDate}</Text>
-                    </View>
-                  </View>
-                </View>
-
-                {/* Description Section */}
-                <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeaderRow}>
-                    <Ionicons name="document-text" size={20} color="#1B2560" />
-                    <Text style={styles.sectionTitle}>Description</Text>
-                  </View>
-                  <Text style={styles.descriptionText}>{selectedTask.description}</Text>
-                </View>
-
-                {/* Additional Information */}
-                <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeaderRow}>
-                    <Ionicons name="information-circle" size={20} color="#1B2560" />
-                    <Text style={styles.sectionTitle}>Additional Information</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Task ID:</Text>
-                    <Text style={styles.detailValue}>{selectedTask.taskId}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Reported By:</Text>
-                    <Text style={styles.detailValue}>{selectedTask.reportedBy}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Status:</Text>
-                    <Text style={styles.detailValue}>{selectedTask.status}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Due Date:</Text>
-                    <Text style={styles.detailValue}>{selectedTask.dueDate}</Text>
-                  </View>
-                </View>
-
-                {/* Instructions */}
-                <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeaderRow}>
-                    <Ionicons name="list" size={20} color="#1B2560" />
-                    <Text style={styles.sectionTitle}>Instructions</Text>
-                  </View>
-                  <View style={styles.instructionsList}>
-                    <View style={styles.instructionItem}>
-                      <View style={styles.instructionNumber}>
-                        <Text style={styles.instructionNumberText}>1</Text>
-                      </View>
-                      <Text style={styles.instructionText}>Assemble at designated staging area immediately</Text>
-                    </View>
-                    <View style={styles.instructionItem}>
-                      <View style={styles.instructionNumber}>
-                        <Text style={styles.instructionNumberText}>2</Text>
-                      </View>
-                      <Text style={styles.instructionText}>Conduct equipment check before deployment</Text>
-                    </View>
-                    <View style={styles.instructionItem}>
-                      <View style={styles.instructionNumber}>
-                        <Text style={styles.instructionNumberText}>3</Text>
-                      </View>
-                      <Text style={styles.instructionText}>Establish communication protocols</Text>
-                    </View>
-                    <View style={styles.instructionItem}>
-                      <View style={styles.instructionNumber}>
-                        <Text style={styles.instructionNumberText}>4</Text>
-                      </View>
-                      <Text style={styles.instructionText}>Brief team on specific mission objectives</Text>
-                    </View>
-                  </View>
-                </View>
-
-                {/* Required Resources */}
-                <View style={styles.sectionCard}>
-                  <View style={styles.sectionHeaderRow}>
-                    <Ionicons name="construct" size={20} color="#1B2560" />
-                    <Text style={styles.sectionTitle}>Required Resources</Text>
-                  </View>
-                  <View style={styles.resourceGrid}>
-                    <View style={styles.resourceItem}>
-                      <Ionicons name="boat" size={16} color="#1B2560" />
-                      <Text style={styles.resourceText}>Rescue boats</Text>
-                    </View>
-                    <View style={styles.resourceItem}>
-                      <Ionicons name="shield" size={16} color="#1B2560" />
-                      <Text style={styles.resourceText}>Life vests</Text>
-                    </View>
-                    <View style={styles.resourceItem}>
-                      <Ionicons name="radio" size={16} color="#1B2560" />
-                      <Text style={styles.resourceText}>Communication radios</Text>
-                    </View>
-                    <View style={styles.resourceItem}>
-                      <Ionicons name="medical" size={16} color="#1B2560" />
-                      <Text style={styles.resourceText}>First aid kits</Text>
-                    </View>
-                  </View>
-                </View>
-              </ScrollView>
-            </SafeAreaView>
-          </View>
-        </Modal>
-      )}
     </View>
   )
 }
@@ -1271,7 +433,7 @@ const styles = StyleSheet.create({
   metricCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
-    padding: 16, // Changed from 12 to 16
+    padding: 12, // Changed from 12 to 16
     width: "24%", // Changed from "23%" to "24%"
     aspectRatio: 1, // Add this line to make boxes square
     alignItems: "center",

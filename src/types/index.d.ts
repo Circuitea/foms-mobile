@@ -14,4 +14,4 @@ export interface User {
   status: Status;
 }
 
-export type Status = 'available' | 'assigned' | 'on leave' | 'emergency';
+export type Status = 'available' | 'on break' | 'unavailable' | 'emergency';

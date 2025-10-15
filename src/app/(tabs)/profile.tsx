@@ -5,8 +5,7 @@ import { useProfile } from "@/providers/ProfileProvider"
 import { Ionicons } from "@expo/vector-icons"
 import Constants from 'expo-constants'
 import { Image } from 'expo-image'
-import { useFocusEffect, useRouter } from "expo-router"
-import { useCallback } from "react"
+import { useRouter } from "expo-router"
 import {
   Alert,
   Platform,
@@ -23,10 +22,6 @@ export default function ProfileScreen() {
   const router = useRouter()
   const profile = useProfile();
 
-  useFocusEffect(useCallback(() => {
-    console.log(`file: ${baseURL + '/storage/' + profile.profile_picture_filename}`);
-  }, []))
-
   // Your existing handlers...
   const handlePersonalInformation = () => {
     router.push("/profile/personal-information")
@@ -34,10 +29,6 @@ export default function ProfileScreen() {
 
   const handlePrivacySecurity = () => {
     router.push("/profile/privacy-security")
-  }
-
-  const handleStatus = () => {
-    router.push("/profile/status")
   }
 
   const confirmSignOut = async () => {
@@ -83,11 +74,11 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.menuSection}>
-          <TouchableOpacity style={styles.menuItem} onPress={handleStatus}>
+          {/* <TouchableOpacity style={styles.menuItem} onPress={handleStatus}>
             <Ionicons name="radio-button-on" size={24} color="#6B7280" />
             <Text style={styles.menuText}>Status</Text>
             <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity style={styles.menuItem} onPress={handlePersonalInformation}>
             <Ionicons name="person-outline" size={24} color="#6B7280" />
