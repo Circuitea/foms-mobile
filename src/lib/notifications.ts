@@ -5,7 +5,6 @@ import { Platform } from "react-native";
 
 function handleRegistrationError(errorMessage: string) {
     alert(errorMessage);
-    throw new Error(errorMessage);
 }
 
 export async function registerForPushNotificationsAsync() {
@@ -19,16 +18,16 @@ export async function registerForPushNotificationsAsync() {
     }
 
     if (isDevice) {
-        const { status: existingStatus } = await getPermissionsAsync();
+        const { granted } = await getPermissionsAsync();
 
-        let finalStatus = existingStatus;
+        let finalStatus = granted;
 
-        if (existingStatus !== 'granted') {
-            const { status } = await requestPermissionsAsync();
-            finalStatus = status;
+        if (!granted) {
+            const { granted } = await requestPermissionsAsync();
+            finalStatus = granted;
         }
 
-        if (finalStatus !== 'granted') {
+        if (!finalStatus) {
             handleRegistrationError('Permission not granted to get push token for push notifications');
             return;
         }

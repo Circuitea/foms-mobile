@@ -19,35 +19,40 @@ export default function Index() {
   const onSubmit = async () => {
     setErrors({});
 
-    const response = await api.post('/login', {
-      email,
-      password,
-      device_name,
-    })
-
-    const { token, errors } = response.data;
-
-    if (!!response.data.errors) {
-      setErrors(errors);
-      return;
-    }
-
-    if (token) {
-      setItemAsync(STORE_API_TOKEN_KEY, token);
-
-      const expoToken = await getItemAsync(STORE_EXPO_PUSH_TOKEN_KEY);
-      const userProfileResponse = await api.get('/user');
-
-      profileDispatch({
-        type: 'set',
-        user: userProfileResponse.data,
-      });
-
-      await api.post('/expo-token', {
-        'token': expoToken,
+    try {
+      const response = await api.post('/login', {
+        email,
+        password,
+        device_name,
       })
+    
 
-      router.replace('/(tabs)/home');
+      const { token, errors } = response.data;
+
+      if (!!response.data.errors) {
+        setErrors(errors);
+        return;
+      }
+
+      if (token) {
+        setItemAsync(STORE_API_TOKEN_KEY, token);
+
+        const expoToken = await getItemAsync(STORE_EXPO_PUSH_TOKEN_KEY);
+        const userProfileResponse = await api.get('/user');
+
+        profileDispatch({
+          type: 'set',
+          user: userProfileResponse.data,
+        });
+
+        await api.post('/expo-token', {
+          'token': expoToken,
+        })
+
+        router.replace('/(tabs)/home');
+      }
+    } catch(e) {
+      // console.error(e);
     }
   }
 
@@ -108,7 +113,9 @@ export default function Index() {
         {/* <Button title="Login" /> */}
         <Button title="Login" onPress={onSubmit} />
         
-        <Link style={formStyles.forgotPassword} href="/forgotPassword">Forgot Password</Link>
+        <Link style={formStyles.forgotPassword} href="/forgotPassword">
+          <Text>Forgot Password</Text>
+        </Link>
       </View>
     </KeyboardAvoidingView>
   );
