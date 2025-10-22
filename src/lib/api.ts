@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Constants from 'expo-constants';
-import { deleteItemAsync, getItemAsync } from 'expo-secure-store';
+import { getItemAsync } from 'expo-secure-store';
 import { STORE_API_TOKEN_KEY } from './constants';
 
 
@@ -8,13 +8,6 @@ const api = axios.create({
     baseURL: (Constants.expoConfig?.extra?.apiBaseURL ?? 'https://foms.djcayz.xyz') + '/api',
     timeout: 10000,
 });
-
-// api.interceptors.request.use(async (config) => {
-//     console.log(`Sending request to ${config.baseURL}${config.url}`);
-//     console.log(`Headers: ${config.headers}`);
-
-//     return config;
-// });
 
 api.interceptors.request.use(async (config) => {
     const token = await getItemAsync(STORE_API_TOKEN_KEY);
@@ -26,30 +19,7 @@ api.interceptors.request.use(async (config) => {
     return config;
 });
 
-api.interceptors.response.use(null, async (error) => {
-    if (!!error.response && error.status === 422) {
-        return Promise.resolve(error.response);
-    }
-    
-    if (error.status === 401) {
-        deleteItemAsync(STORE_API_TOKEN_KEY);
-    }
-
-    return Promise.reject(error);
-});
-
-// api.interceptors.response.use(null, async (error) => {
-//     if (error.status === 422) {
-//         return Promise.resolve(error.response.data)
-//     }
-
-//     return Promise.reject(error);
-// })
-
 export default api;
-
-
-// const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 // class ApiClient {
 //     private static instance: ApiClient;
