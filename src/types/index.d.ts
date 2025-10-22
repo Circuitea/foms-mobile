@@ -2,7 +2,7 @@ export interface User {
   id: number;
 
   email: string;
-  mobile_number;
+  mobile_number?: string;
 
   first_name: string;
   middle_name?: string;
