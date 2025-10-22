@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "./Button";
 
 export function TaskStatusModal(props: ModalProps & {
-  onTaskFinish?: (notes?: string) => void,
+  onTaskFinish?: (notes?: string, attachments?: ImagePicker.ImagePickerAsset[]) => void,
   onTaskCancel?: () => void,
   onOpenChange?: (open: boolean) => void,
 }) {
@@ -60,6 +60,11 @@ export function TaskStatusModal(props: ModalProps & {
       setAttachments([]);
     }
   }, [props.visible]);
+
+  const handleFinish = () => {
+    if (props.onTaskFinish) props.onTaskFinish(notes, attachments);
+    if (props.onOpenChange) props.onOpenChange(false);
+  };
 
   return (
     <Modal {...props}>
@@ -154,12 +159,7 @@ export function TaskStatusModal(props: ModalProps & {
                         )}
                       </ScrollView>
 
-                      <Button title="Submit and Finalize Task" onPress={() => {
-                          if (props.onTaskFinish) props.onTaskFinish(notes)
-                          
-                          if (props.onOpenChange) props.onOpenChange(false)
-                        }}
-                      />
+                      <Button title="Submit and Finalize Task" onPress={handleFinish} />
                       <Button title="Cancel" onPress={() => setAction(null)} />
                     </View>
                   )

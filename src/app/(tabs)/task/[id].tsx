@@ -7,6 +7,7 @@ import { Task } from "@/types/tasks"
 import { ConsumableItem, ConsumableTransaction, EquipmentItem, EquipmentTransaction, Transaction } from "@/types/transaction"
 import { Ionicons } from "@expo/vector-icons"
 import dayjs from "dayjs"
+import * as ImagePicker from 'expo-image-picker'
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
 import { useCallback, useEffect, useState } from "react"
 import {
@@ -53,7 +54,39 @@ export default function TasksScreen() {
 
   const router = useRouter();
 
-  async function updateTaskStatus(status: 'started' | 'finished' | 'canceled', additional_notes?: string) {
+  async function updateTaskStatus(status: 'started' | 'finished' | 'canceled', additional_notes?: string, attachments?: ImagePicker.ImagePickerAsset[]) {
+    if (attachments && attachments.length > 0) {
+    const form = new FormData();
+    form.append('status', status);
+    if (additional_notes) form.append('additional_notes', additional_notes);
+
+    attachments.forEach((att, i) => {
+      const uri = att.uri;
+      const name = (att.fileName ?? `photo_${Date.now()}_${i}`).toString();
+      const type = (att.type ?? 'image/jpeg').toString();
+
+      // RN/FormData expects an object with uri, name, type
+      form.append('attachments[]', {
+        uri,
+        name,
+        type,
+      } as unknown as any);
+    });
+
+    const response = await api.post(`/task/${task?.id}/status`, {
+      method: 'POST',
+      body: form,
+    });
+
+    if (response.status === 200) {
+      const data = response.data;
+      if (data.task) setTask(data.task);
+    } else {
+      console.error('Failed to update task with attachments', response.status);
+    }
+    return;
+  }
+
     const response = await api.post<{ task: TaskWithProps }>(`/task/${task?.id}/status`, {
       status,
       additional_notes,
