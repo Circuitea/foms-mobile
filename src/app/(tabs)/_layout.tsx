@@ -106,7 +106,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="tasks"
         options={{
-          title: "Incidents",
+          title: "My Tasks",
           tabBarIcon: ({ color, focused }) => (
               <View style={styles.tabContainer}>
                 {focused && <View style={styles.activeIndicator} />}
@@ -118,13 +118,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="meetings"
         options={{
-          title: "Meetings",
-          tabBarIcon: ({ color, focused }) => (
-            <View style={styles.tabContainer}>
-              {focused && <View style={styles.activeIndicator} />}
-              <Ionicons name="calendar-outline" size={22} color={focused ? "#EF4444" : "#9CA3AF"} />
-            </View>
-          ),
+          href: null,
         }}
       />
       <Tabs.Screen
