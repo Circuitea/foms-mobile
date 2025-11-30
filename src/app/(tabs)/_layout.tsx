@@ -7,7 +7,7 @@ import { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function TabsLayout() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, isFirstTimeLogin } = useAuth();
   const [notificationModalOpen, setNotificationModalOpen] = useState(false);
 
   if (isLoading) {
@@ -21,6 +21,11 @@ export default function TabsLayout() {
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return <Redirect href="/(auth)/login" />;
+  }
+
+  // Redirect to onboarding if first time login
+  if (isFirstTimeLogin) {
+    return <Redirect href="/(auth)/onboarding" />;
   }
 
   return (
@@ -134,36 +139,36 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-          name="profile/personal-information"
-          options={{
-            href: null,
-          }}
-        />
-        <Tabs.Screen
-          name="profile/privacy-security"
-          options={{
-            href: null,
-          }}
-        />
-        <Tabs.Screen
-          name="profile/help-support"
-          options={{
-            href: null,
-          }}
-        />
-        <Tabs.Screen
-          name="profile/status"
-          options={{
-            href: null,
-          }}
-        />
+        name="profile/personal-information"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="profile/privacy-security"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="profile/help-support"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="profile/status"
+        options={{
+          href: null,
+        }}
+      />
 
-        <Tabs.Screen
-          name="task/[id]"
-          options={{
-            href: null,
-          }}
-        />
+      <Tabs.Screen
+        name="task/[id]"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

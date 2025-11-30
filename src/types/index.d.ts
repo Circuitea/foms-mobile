@@ -12,6 +12,8 @@ export interface User {
   position?: string;
   profile_picture_filename?: string;
   status: Status;
+
+  first_time_login: boolean;
 }
 
 export type Status = 'available' | 'on break' | 'unavailable' | 'emergency';
