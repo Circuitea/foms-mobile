@@ -168,6 +168,7 @@ const formStyles = StyleSheet. create({
     padding: 12,
     marginBottom: 15,
     fontSize: 16,
+    color: "black",
   },
   errorContainer: {
     flexDirection: "row",
