@@ -1,6 +1,6 @@
 "use client"
 
-import api from "@/lib/api"
+import { useAuth } from "@/providers/auth-provider"
 import { useProfile } from "@/providers/ProfileProvider"
 import { Ionicons } from "@expo/vector-icons"
 import Constants from 'expo-constants'
@@ -18,6 +18,7 @@ import {
 } from "react-native"
 
 export default function ProfileScreen() {
+  const { logout } = useAuth();
   const baseURL = Constants.expoConfig?.extra?.apiBaseURL ?? 'https://foms.djcayz.xyz';
   const router = useRouter()
   const profile = useProfile();
@@ -32,9 +33,7 @@ export default function ProfileScreen() {
   }
 
   const confirmSignOut = async () => {
-    const response = await api.delete('/logout');
-
-    if (response.status === 200) router.navigate('/');
+    await logout();
   }
 
   const handleSignOut = () => {

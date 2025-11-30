@@ -1,8 +1,8 @@
 import { useAuth } from "@/providers/auth-provider";
-import { Redirect } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 
-export default function Index() {
+export default function AuthLayout() {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
@@ -13,9 +13,21 @@ export default function Index() {
     );
   }
 
+  // Redirect to home if already authenticated
   if (isAuthenticated) {
     return <Redirect href="/(tabs)/home" />;
   }
 
-  return <Redirect href="/(auth)/login" />;
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        animation: "slide_from_right",
+        contentStyle: { backgroundColor: "transparent" },
+      }}
+    >
+      <Stack.Screen name="login" />
+      <Stack.Screen name="forgot-password" />
+    </Stack>
+  );
 }

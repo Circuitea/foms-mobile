@@ -1,40 +1,44 @@
 import api from "@/lib/api";
 import { STORE_EXPO_PUSH_TOKEN_KEY, TASK_GET_LOCATION } from "@/lib/constants";
 import { registerForPushNotificationsAsync } from "@/lib/notifications";
-import { ProfileProvider, useProfileDispatch } from "@/providers/ProfileProvider";
-import NetInfo from '@react-native-community/netinfo';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
+import { AuthProvider, useAuth } from "@/providers/auth-provider";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { LinearGradient } from "expo-linear-gradient";
 import { LocationObject, stopLocationUpdatesAsync } from "expo-location";
-import * as Notifications from 'expo-notifications';
-import { router, Stack } from "expo-router";
+import * as Notifications from "expo-notifications";
+import { Slot } from "expo-router";
 import { setItemAsync } from "expo-secure-store";
-import * as SplashScreen from 'expo-splash-screen';
-import * as TaskManager from 'expo-task-manager';
+import * as SplashScreen from "expo-splash-screen";
+import * as TaskManager from "expo-task-manager";
 import { useEffect } from "react";
-import { ImageBackground } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ActivityIndicator, ImageBackground, View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 dayjs.extend(relativeTime);
 
-TaskManager.defineTask<{ locations: LocationObject[] }>(TASK_GET_LOCATION, async ({ data: { locations }, error }) => {
-  if (error) {
-    console.error(error.message);
-    return;
-  }
-
-  const { latitude, longitude } = locations[0].coords;
-
-  return api.post('/location', {
-    latitude,
-    longitude,
-  }).catch(error => {
-    if (error.status === 401) {
-      return stopLocationUpdatesAsync(TASK_GET_LOCATION);
+TaskManager.defineTask<{ locations: LocationObject[] }>(
+  TASK_GET_LOCATION,
+  async ({ data: { locations }, error }) => {
+    if (error) {
+      console.error(error. message);
+      return;
     }
-  });
-});
+
+    const { latitude, longitude } = locations[0]. coords;
+
+    return api
+      .post("/location", {
+        latitude,
+        longitude,
+      })
+      .catch((error) => {
+        if (error.status === 401) {
+          return stopLocationUpdatesAsync(TASK_GET_LOCATION);
+        }
+      });
+  }
+);
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -45,7 +49,6 @@ Notifications.setNotificationHandler({
   }),
 });
 
-
 SplashScreen.setOptions({
   duration: 1000,
   fade: true,
@@ -55,83 +58,66 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   return (
-    <ProfileProvider>
-      <RootContent />
-    </ProfileProvider>
-  )
+    <SafeAreaProvider>
+      <AuthProvider>
+        <RootContent />
+      </AuthProvider>
+    </SafeAreaProvider>
+  );
 }
 
 function RootContent() {
-  const profileDispatch = useProfileDispatch();
+  const { isLoading } = useAuth();
 
   useEffect(() => {
-    async function initialize() {
-      try {
-        const response = await api.get('/user');
-
-        profileDispatch({
-          type: 'set',
-          user: response.data,
-        });
-        
-        router.replace('/(tabs)/home');
-      } catch (error) {
-        console.log('Removing profile data');   
-        profileDispatch({ type: 'remove' });
-      }
-
-    }
-
-    initialize().finally(() => {
+    if (! isLoading) {
       SplashScreen.hide();
-    }); 
+    }
+  }, [isLoading]);
 
-    const unsubscribe = NetInfo.addEventListener(state => {
-      if (state.isConnected) {
-        initialize();
-      }
-    });
-    
+  useEffect(() => {
     registerForPushNotificationsAsync()
-      .then(token => {
+      .then((token) => {
         if (token) {
           setItemAsync(STORE_EXPO_PUSH_TOKEN_KEY, token);
-          api.post('/expo-token', {token});
+          api.post("/expo-token", { token });
         }
       })
       .catch(console.error);
 
-    const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    })
+    const responseListener =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
 
     return () => {
       responseListener.remove();
-      unsubscribe();
     };
   }, []);
 
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#1B2560" />
+      </View>
+    );
+  }
+
   return (
-    <SafeAreaView style={{minHeight: '100%'}}>
-      <Stack
-        screenLayout={({ children }) => (
-            <ImageBackground source={require('../../assets/images/login_bg.jpg')} style={{minHeight: '100%'}}>
-              <LinearGradient
-                style={{ flex: 1 }}
-                colors={['rgba(255, 77, 77, 0.8)', 'rgba(27, 37, 96, 0.8)']}
-                start={{ x: 0.5, y: 0}}
-                end={{ x: 0.5, y: 1}}
-              >
-                {children}
-              </LinearGradient>
-            </ImageBackground>
-        )}
-        screenOptions={{headerShown: false, animation: 'slide_from_right'}}
+    <SafeAreaView style={{ flex: 1 }}>
+      <ImageBackground
+        source={require("../../assets/images/login_bg.jpg")}
+        style={{ flex: 1 }}
+      >
+        <LinearGradient
+          style={{ flex: 1 }}
+          colors={["rgba(255, 77, 77, 0.8)", "rgba(27, 37, 96, 0.8)"]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
         >
-        <Stack.Screen name="index" />
-        <Stack.Screen name="forgotPassword" />
-        <Stack.Screen name="(tabs)" />
-      </Stack>
+          <Slot />
+        </LinearGradient>
+      </ImageBackground>
     </SafeAreaView>
-  )
+  );
 }

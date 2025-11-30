@@ -1,31 +1,31 @@
 import { NotificationModal } from "@/components/NotificationModal";
-import { TASK_GET_LOCATION } from "@/lib/constants";
-import { startLocationTracking } from "@/lib/location";
+import { useAuth } from "@/providers/auth-provider";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import * as Location from 'expo-location';
-import { Tabs } from "expo-router";
-import { useEffect, useState } from "react";
-import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Redirect, Tabs } from "expo-router";
+import { useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function RootLayout() {
+export default function TabsLayout() {
+  const { isAuthenticated, isLoading } = useAuth();
   const [notificationModalOpen, setNotificationModalOpen] = useState(false);
 
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#FFFFFF" />
+      </View>
+    );
+  }
 
-  useEffect(() => {
-    startLocationTracking();
-
-    return () => {
-      console.log('Unloading...')
-      Location.stopLocationUpdatesAsync(TASK_GET_LOCATION);
-    }
-  });
+  // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    return <Redirect href="/(auth)/login" />;
+  }
 
   return (
-    <>
-      <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" translucent={false} hidden={false} />
-      <Tabs
-        screenOptions={{
+    <Tabs
+      screenOptions={{
           tabBarActiveTintColor: "#EF4444",
           tabBarInactiveTintColor: "#9CA3AF",
           tabBarStyle: {
@@ -51,7 +51,7 @@ export default function RootLayout() {
           },
           headerShown: false,
         }}
-        screenLayout={({ children }) => (
+      screenLayout={({ children }) => (
           <>
             <View style={styles.headerContainer}>
               <LinearGradient
@@ -90,71 +90,56 @@ export default function RootLayout() {
             <NotificationModal open={notificationModalOpen} onOpenChange={setNotificationModalOpen} />
           </>
         )}
-      >
-        <Tabs.Screen
-          name="home"
-          options={{
-            title: "Home",
-            tabBarIcon: ({ color, focused }) => (
+    >
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: "Home",
+          tabBarIcon: ({ color, focused }) => (
               <View style={styles.tabContainer}>
                 {focused && <View style={styles.activeIndicator} />}
                 <Ionicons name={focused ? "home" : "home-outline"} size={22} color={focused ? "#EF4444" : "#9CA3AF"} />
               </View>
             ),
-          }}
-        />
-        <Tabs.Screen
-          name="tasks"
-          options={{
-            title: "Tasks",
-            tabBarIcon: ({ color, focused }) => (
+        }}
+      />
+      <Tabs.Screen
+        name="tasks"
+        options={{
+          title: "Incidents",
+          tabBarIcon: ({ color, focused }) => (
               <View style={styles.tabContainer}>
                 {focused && <View style={styles.activeIndicator} />}
                 <Ionicons name="list-outline" size={22} color={focused ? "#EF4444" : "#9CA3AF"} />
               </View>
             ),
-          }}
-        />
-        <Tabs.Screen
-          name="map"
-          options={{
-            href: null,
-            // title: "Map",
-            // tabBarIcon: ({ color, focused }) => (
-            //   <View style={styles.mapTabContainer}>
-            //     <View style={styles.mapTabButton}>
-            //       <Ionicons name="map" size={24} color="#FFFFFF" />
-            //     </View>
-            //   </View>
-            // ),
-          }}
-        />
-        <Tabs.Screen
-          name="meetings"
-          options={{
-            title: "Meetings",
-            tabBarIcon: ({ color, focused }) => (
-              <View style={styles.tabContainer}>
-                {focused && <View style={styles.activeIndicator} />}
-                <Ionicons name="calendar-outline" size={22} color={focused ? "#EF4444" : "#9CA3AF"} />
-              </View>
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            title: "Profile",
-            tabBarIcon: ({ color, focused }) => (
+        }}
+      />
+      <Tabs.Screen
+        name="meetings"
+        options={{
+          title: "Meetings",
+          tabBarIcon: ({ color, focused }) => (
+            <View style={styles.tabContainer}>
+              {focused && <View style={styles.activeIndicator} />}
+              <Ionicons name="calendar-outline" size={22} color={focused ? "#EF4444" : "#9CA3AF"} />
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color, focused }) => (
               <View style={styles.tabContainer}>
                 {focused && <View style={styles.activeIndicator} />}
                 <Ionicons name="person-outline" size={22} color={focused ? "#EF4444" : "#9CA3AF"} />
               </View>
             ),
-          }}
-        />
-        {/* Hide profile sub-screens from tabs */}
-        <Tabs.Screen
+        }}
+      />
+      <Tabs.Screen
           name="profile/personal-information"
           options={{
             href: null,
@@ -185,9 +170,8 @@ export default function RootLayout() {
             href: null,
           }}
         />
-      </Tabs>
-    </>
-  )
+    </Tabs>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -342,5 +326,3 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 })
-
-
